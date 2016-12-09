@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>选择城市</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script> 
+    <script type="text/javascript" src="../javascript/selectcity.js"></script> 
+    <script type="text/javascript" src="../javascript/pycode.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    
+</head>
+<body>
+	<header class="register selectCity">
+		<a onclick="javascript: history.go(-1)" class="backTo"><img src="../images/header_back.png" alt=""></a>
+		<span class="logo">
+			选择城市
+		</span>
+		<a  class="home" onclick="sureClick();">
+           确定 
+        </a>
+	</header>
+    <div class="letters">
+        <ul>
+          <!--  <li>#</li>
+            <li><a href="javascript:;">当前</a></li>
+            <li><a href="javascript:;">热门</a></li>
+            -->
+        </ul>
+    </div>
+	<div class="selectCityCon">
+        <div class="selectList">
+            <a href="javascript:;" class="title curTitle">
+                当前城市
+            </a>
+            <ul class="listItem" onclick="doClick(2,'上海');">
+                <li><a href="javascript:;">上海</a></li>
+            </ul>  
+        </div> 
+        <div class="selectList">
+            <a href="javascript:;" class="title">
+                热门城市
+            </a>
+            <ul class="listItem" onclick="doClick(2,'上海');">
+                <li><a href="javascript:;">上海</a></li>
+            </ul>  
+        </div> 
+        <div id="areaList"></div>
+    </div>    
+</body>
+<script type="text/javascript">
+    $(window).load(function () {
+        $('.letters a').click(function () {
+            var index = $(this).parent('li').index() - 1;
+            var height = parseInt($('.selectList').eq(index).offset().top - $('header').height());
+            $('body,html').animate({ scrollTop: height }, 1000);
+        })
+        $(document).on('click', '.listItem li', function () {
+            $(".listItem li").removeClass("selected");
+            $(this).addClass("selected");
+        })
+    })
+    </script>
+
+</html>

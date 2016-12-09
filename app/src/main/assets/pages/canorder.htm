@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>可租用时间</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../CSS/base.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type='text/javascript' src='../javascript/zpomini.js'></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    
+    <script type='text/javascript' src='../javascript/common.js'></script>
+    <script type="text/javascript" src="../javascript/calendar.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function () {
+            var urlData = $.urlData();
+
+            var shopHours = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"]; //$.getShopHours($.getSessionCache('backShopName'));
+            var backurl = urlData.backurl;
+
+            var jshours = $('#jshours');
+            $(shopHours).each(function () {
+                var html = "<div class='item odd'>" +
+						            "<div class='roundin'></div>" +
+						            "<div class='roundout'></div>" +
+						            "<div class='line'></div>" +
+						            "<div class='text'>" + this + "</div>" +
+					            "</div>";
+                jshours.append(html);
+            });
+            var mydate = new Date(),
+			        thisyear = mydate.getFullYear(),
+			        thismonth = mydate.getMonth(),
+			        realday = mydate.getDate(),
+			        jsday = $('#jsday'),
+			        jshour = $('#jshour');
+            var oldtime = $.getNormalTime((new Date()).getTime());
+            var mycalendar = new AVIS.Calendar();
+            if (oldtime) {
+                mycalendar.initializeDate({
+                    'defaultYear': oldtime.split(' ')[0].split('-')[0],
+                    'defaultMonth': oldtime.split(' ')[0].split('-')[1]
+                });
+            }
+            else {
+
+            }
+            mycalendar.createCalendar('#jsCalendarContainer');
+            mycalendar.addCallBack(function () {
+                var date = $(this).attr('date');
+                $('#jsday').attr('value', date);
+            });
+
+
+
+
+
+            var curStartDate = new Date();
+            var curStartDateStr = curStartDate.getFullYear() + "-" + (curStartDate.getMonth() + 1) + "-" + curStartDate.getDate() + " " + curStartDate.getHours() + ":" + curStartDate.getMinutes();
+            var curEndDate = new Date();
+            curEndDate.setDate(curEndDate.getDate() + 6);
+            var curEndDateStr = curEndDate.getFullYear() + "-" + (curEndDate.getMonth() + 1) + "-" + curEndDate.getDate() + " " + curEndDate.getHours() + ":" + curEndDate.getMinutes();
+
+            $.getJson({
+                "ObjectName": "CARUSEDDATE",
+
+                "SearchData": [
+                  {
+                      "FieldName": "StartDate",
+                      "FieldVal": curStartDateStr,
+                      "Relation": "And",
+                      "SearchMode": "Equal"
+                  },
+                  {
+                      "FieldName": "EndDate",
+                      "FieldVal": curEndDateStr,
+                      "Relation": "And",
+                      "SearchMode": "Equal"
+                  }
+               ]
+            },
+       function () {
+           if (this.IsSuccess == true) {
+               var tds = $('#jsCalendarContainer td.future');
+               var month = parseInt(oldtime.split(' ')[0].split('-')[1]);
+               $.packing(this.Data).each(function () {
+                   //scoreCount = scoreCount + this.Score;
+
+                   var usedList = showUsedDate(this.StartDate, this.EndDate);
+                   for (var j = 0; j < usedList.content.length; j++) {
+                       var arr = usedList.content[j];
+                       var thismonth = arr[0].split('-')[1];
+                       var day = arr[0].split('-')[2];
+                       var type = arr[1];
+                       tds.each(function () {
+                           if (thismonth != month) { return; }
+                           if ($(this).text() == day) {
+                               if (type == "Part") {
+                                   $(this).addClass("halfday");
+                               }
+                               else if (type == "All") {
+
+                               }
+                               else if (type == "UnUsed") {
+                                   $(this).addClass("allday");
+                               }
+                           }
+                       });
+
+
+
+                   }
+
+               });
+
+
+
+           }
+           else {
+               $.easyErrorBox(this.Message);
+           }
+       });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            return;
+            $('#submitOrder').click(function () {
+                var jsdaydate = jsday.attr('value') == '' ? (thisyear + '-' + (thismonth + 1) + '-' + realday) : jsday.attr('value');
+                var jshourdate = jshour.attr('value') == '' ? '09:00' : jshour.attr('value');
+                if (urlData.type == 'get') {
+                    //                    if (!$.getSessionCache('backCarTime')) {
+                    //                        var backCarTime = $.getNormalTime(parseInt($.getMicroTime(jsdaydate + ' ' + jshourdate)) + 2  * 60 * 60 * 1000);
+                    //                    }
+                    //                    else {
+                    //                        var backCarTime = $.getSessionCache('backCarTime');
+                    //                    }
+                    $.setSessionCache({
+                        getCarTime: jsdaydate + ' ' + jshourdate
+                        //    backCarTime: backCarTime
+                    });
+                }
+                else if (urlData.type == 'back') {
+                    $.setSessionCache({
+                        backCarTime: jsdaydate + ' ' + jshourdate
+                    });
+                }
+                window.location.href = 'submitorder.htm';
+            });
+
+            //小时选择器的宽度控制
+            var hourcontainerW = $('#jshourcontainer').width();
+            var per = hourcontainerW / 4;
+            $('#jshours div.item').each(function () {
+                $(this).css('width', per + 'px');
+            });
+
+            var items = $('#jshours div.item'),
+		            shopHoursLen = shopHours.length,
+                    jshour = $('#jshour'),
+                    target = $('#jshours'),
+		            jslefthourbtn = $('#jslefthourbtn'),
+		            jsrighthourbtn = $('#jsrighthourbtn'),
+		            itemwidth = items.eq(0).width(),
+		            width = $('#jshourcontainer').width(),
+		            totalW = items.length * itemwidth,
+		            moveW = totalW - width,
+		            scrollW = parseInt(shopHoursLen / 4) * 40,
+		            i = 0, index = 0;
+            jsrighthourbtn.click(function () {
+                var scrollL = $('#jshourcontainer').scrollLeft();
+                var scrollLeft = scrollL + scrollW;
+                $('#jshourcontainer').animate({ scrollLeft: scrollLeft }, 300);
+            });
+            jslefthourbtn.click(function () {
+                var scrollL = $('#jshourcontainer').scrollLeft();
+                var scrollLeft = scrollL - scrollW;
+                $('#jshourcontainer').animate({ scrollLeft: scrollLeft }, 300);
+            });
+            items.each(function (j) {
+                $(this).click(function () {
+                    var text = $(this).find('div.text').text();
+                    jshour.attr('value', text);
+                    items.each(function (k) {
+                        if (k == j) { $(this).addClass('focus') } else { $(this).removeClass('focus'); }
+                    });
+                });
+            });
+
+            var futures = $('td.future');
+
+            if (oldtime) {
+                var oldyear = oldtime.split(' ')[0],
+		                oldhour = oldtime.split(' ')[1],
+		                oldday = oldyear.split('-')[2];
+
+                items.each(function (i) {
+                    var text = $(this).find('div.text').text();
+                    if (text == oldhour) {
+                        index = i;
+                        $(this).addClass('focus');
+                    }
+                    else {
+                        $(this).removeClass('focus');
+                    }
+                });
+                items.eq(index).click();
+                futures.each(function () {
+                    var text = $(this).text();
+                    if (parseInt(text) == parseInt(oldday)) {
+                        $(this).addClass('focus');
+                        $(this).click();
+                    }
+                    else {
+                        $(this).removeClass('focus');
+                    }
+                });
+            }
+        });
+		</script>
+
+</head>
+<body class="calendar">
+    <header class="carDetailHead">
+        <a class="back" onclick="javascript: history.go(-1)"><img src="../images/back.png"></a>
+        <div class="title"><span>选择日期</span> </div>
+        <div class="home" onclick="javascript:showMap();"><img src="../images/home.png"></div>
+    </header>
+    <div class='jscalendar'>
+		<input type='hidden' id='jsday' value='' />
+		<input type='hidden' id='jshour' value='' />
+		<div class='days' id='jsCalendarContainer'></div>
+	</div>
+    <div class="carDetailCon">
+    <div class="mark">
+                <img src="../images/allday.png" class="allday"><span style="line-height:22px;">全天不可租</span>
+                <img src="../images/halfday.png" class="halfday"><span style="line-height:22px;">部分时间可租</span>
+            </div></div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>E享天开-账户信息</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type='text/javascript' src='../javascript/zpomini.js'></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script type='text/javascript' src='../javascript/common.js'></script>
+    <script type='text/javascript' src='../javascript/accountinfo.js'></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+</head>
+<body>
+    <header class="carDetailHead userCenterhead">
+        <a class="back"  onclick="javascript: history.go(-1)">
+            <img src="../images/order_back.png"></a>
+        <div class="title">
+            <span>账户信息</span>
+        </div>
+    </header>
+    <div class="subOrderCon accountInfo">
+        <div class="account borTopBot">
+            <div class="headPortrait item">
+                <h2>
+                    头像</h2>
+                <p class="right" id="headimg">
+                </p>
+            </div>
+            <div class="item">
+                <h2>
+                    会员等级</h2>
+                <p class="right" id="memberleve">
+                </p>
+            </div>
+        </div>
+        <div class="setUp borTopBot">
+            <div class="item" onclick="window.location.href= 'modifyname.htm';">
+                <h2>
+                    姓名</h2>
+                <p class="right">
+                    <span class="text" id="membername"></span>
+                    <img src="../images/de_spread.png" class="fr"></p>
+            </div>
+            <div class="item" id="chooseSex">
+                <h2>
+                    性别</h2>
+                <p class="right">
+                    <span class="text" id="memeberSex"></span>
+                    <img src="../images/de_spread.png" class="fr"></p>
+            </div>
+            <div class="item" onclick="window.location.href= 'modifyphonenumberstep2.htm';">
+                <h2>
+                    绑定手机</h2>
+                <p class="right">
+                    <span class="text" id="phoneNum"></span>
+                    <img src="../images/de_spread.png" class="fr"></p>
+            </div>
+            <div class="item noBor" onclick="resetpwd();">
+                <h2>
+                    密码</h2>
+                <p class="right">
+                    <span class="text blue">修改</span><img src="../images/de_spread.png" class="fr"></p>
+            </div>
+        </div>
+        <button class="bookBtn" id="btnQuit">
+            退出登录</button>
+    </div>
+    <div class="mask accInfo">
+        <div class="chooseSex">
+            <h2>
+                选择性别</h2>
+            <ul>
+                <li>女</li>
+                <li class="noBor">男</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

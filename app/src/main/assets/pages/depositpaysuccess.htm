@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>E享天开-押金支付成功</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type='text/javascript' src='../javascript/zpomini.js'></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script src="../javascript/common.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+     <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+</head>
+<body>
+
+    <header class="register">
+		<a href="list.htm" class="backTo"><img src="../images/header_back.png"></a>
+		<span class="logo">
+			在线支付
+		</span>
+		<div onclick="javascript:showMap();" class="home"><img src="../images/home.png"></div>
+	</header>
+    <div class="inCenCon">
+		<div class="paySuccess">
+			<div class="success"><img src="../images/paysuccess.png"><span>支付成功</span></div>
+			<!--<p class="num">订单号：<span id="orderCode"></span></p>-->
+			<p class="money">账户余额：￥<span class="orange" id="orderAMT"></span>元</p>
+		</div>
+		<div class="remind">
+			<div class="one"><img src="../images/remindone.png"><p>E享天开提供全程智能无人服务，请务必带上您的<span class="green">智能手机</span>；</p></div>
+			<div class="two"><img src="../images/remindtwo.png"><p>取车时，为了您的驾驶愉快，请务必带好您的<span class="green">驾驶证</span>；</p></div>
+			<div class="three"><img src="../images/remindthree.png"><p>如果您对订单有任何修改或疑问，欢迎拨打 <span class="blue">400-010-5888</span></p></div>
+		</div>
+        <button class="loginBtn paysuccsess" id="btnViewTravel" onclick="window.location.href='./login.htm'">立即租车</button>
+    </div>
+  <script>
+      var price = $.getUrlVar("Price");
+      $(".orange").text(price);
+
+      var payca = $.getUrlVar("payStatus");
+      var isub = $.getUrlVar("payType");
+      var r_balance = 0;
+      var r_PayAmt = "";
+      if (payca != null && isub != null & isub == "UnionPay") {
+          var r_paymentnt = $.getUrlVar("PaymentTN");
+          var r_paymentTN_UB = $.getUrlVar("PaymentTN_UB");
+          r_PayAmt = $.getUrlVar("orderamt");
+          var r_memberid = $.getUrlVar("memberid");
+          //alert(r_paymentnt + "|" + r_paymentTN_UB + "|" + r_PayAmt);
+
+          var total = 0;
+          var p = price;
+          if (p == null || p == "") {
+              p = 0;
+          }
+          var p2 = r_PayAmt;
+          if (p2 == null || p2 == "") {
+              p2 = 0;
+          }
+          total = (parseFloat(p) + parseFloat(p2)).toFixed(2);;
+          $(".orange").text(total);
+
+          if (payca == "success") {
+              //付款成功后   更新用户的余额
+              //var doPrice = $("#doValue").val();
+              //window.location.href = './depositpaysuccess.htm?Price=' + doPrice;
+              //window.location.href = './depositpaysuccess.htm?Price=' + r_PayAmt;
+          }
+
+      }
+      else if (isub == "Alipay") {
+          var r_paymentnt = $.getUrlVar("PaymentTN");
+          var r_Member_Id = $.getUrlVar("Member_Id");
+          r_balance = $.getUrlVar("balance");
+          $.getJson({
+              "ObjectName": "MEMBERBALANCE",
+              "SearchData": [
+                                  {
+                                      "FieldName": "PayWay",
+                                      "FieldVal": 0,
+                                      "Relation": "And",
+                                      "SearchMode": "In"
+                                  },
+                                  {
+                                      "FieldName": "MIID",
+                                      "FieldVal": r_Member_Id,
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  },
+                                  {
+                                      "FieldName": "Balance",
+                                      "FieldVal": r_balance,
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  },
+                                  {
+                                      "FieldName": "PaymentTN",
+                                      "FieldVal": r_paymentnt,
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  },
+                                  {
+                                      "FieldName": "TradeNo",
+                                      "FieldVal": '',
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  }
+                               ]
+          }, 'get_MEMBERBALANCE');
+
+
+      }
+      var get_MEMBERBALANCE = function (json) {
+          //$.easyErrorBox("支付失败!");
+          if (json.IsSuccess == true) {
+              var total = 0;
+              var p = price;
+              if (p == null || p == "") {
+                  p = 0;
+              }
+              var p2 = r_balance;
+              if (p2 == null || p2 == "") {
+                  p2 = 0;
+              }
+              total = (parseFloat(p) + parseFloat(p2)).toFixed(2);
+              
+              $("#orderAMT").html(total);
+          }
+          else {
+              $.easyErrorBox(json.Message);
+          }
+      }
+  </script>
+</body>
+</html>

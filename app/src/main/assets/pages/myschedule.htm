@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>我的行程</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script> 
+    <script type="text/javascript" src="../javascript/common.js"></script> 
+    <script type="text/javascript" src="../javascript/myschedule.js"></script>
+    <script type="text/javascript" src="../javascript/leftmenu.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+</head>
+<body>
+    <header class="mySchedule">
+        <a href="javascript:;" class="menu" id="menuBtn"><img src="../images/list_menu.png"></a>
+        <span class="logo">
+            我的行程
+        </span>
+    </header>
+    <div class="myScheduleCon" id="tab">
+        <div class="tab_btn">
+            <a href="javascript:;" class="notTakeCar active">未提车</a>
+            <a href="javascript:;" class="TakeCar">已提车</a>
+            <a href="javascript:;" class="NoCar">已取消</a>
+        </div>
+        <div class="tab_content" id="myScheduleBtn">
+            <div class="tab_con_list" id="notgetcar">
+            </div>
+            <div class="tab_con_list" id="orderList">
+            </div>
+            <div class="tab_con_list" style="display:none;" id="CancelOrder">
+            </div>
+        </div>
+    </div>
+    
+    <!-- 菜单 -->
+	<div class="menuFilter" id="menuFilter">
+		
+	</div>
+    <div class="notravel" id="nomsg" style="display:none;">
+        <img src="../images/car_icon.png" class="icon">
+        <p class="bold">您当前无行程</p>
+        <p class="gray">还等什么，马上查看您的专属座驾吧</p>
+        <a href="list.htm" class="nowcarbtn">现在用车</a>
+    </div>
+</body>
+</html>

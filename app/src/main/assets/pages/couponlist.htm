@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>易出行-优惠券选择</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+ <!--   <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>-->
+    <script type="text/javascript" src="../javascript/global.js"></script>
+    <script type="text/javascript" src="../javascript/common.js"></script>
+    <script type="text/javascript" src="../javascript/coupon.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+   <!-- <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>-->
+
+</head>
+<body>
+    <header class="register">
+        <a onclick="Doback();" class="backTo" ><img src="../images/header_back.png"></a>
+        <span class="logo">
+            使用优惠券
+        </span>
+        <!--<a class="home"  href="javascript:;" onclick="javascript:showMap();"><img src="../images/home.png"></a>-->
+    </header>
+    <div class="coupon">
+<!--        <div class="item padLeft">
+            <div class="name">不使用优惠券</div>
+            <div class="checkRadio" onclick="ifcoupon();">
+                <input type="radio" id="ifcoupon" >
+            </div>
+        </div>-->
+       
+        <div class="title">选择您可用的优惠券</div>
+        
+        <div id="couponlist">
+      
+        </div>
+         <div class="title">输入优惠券码</div>
+        <div class="item padLeft">
+            <input type="text" id="couponcode" placeholder="请输入优惠券码"/><div class="submit" onclick="doUsedCode();" id="btnUseCode">使　用</div>
+        </div>
+    </div>
+    <script>
+        var OrderID = $.getUrlVar("OrderID");
+        function GetPromotion() {
+            $.getJsonAsync({
+                "ObjectName": "USERPROMOTION",
+                "OrderByData": [{ "FieldName": "pm.ID", "Direction": "Desc"}],
+                "PagerData": { "CurrentPage": "1", "PageCount": "100" },
+                "SearchData": [
+                    {
+                        "FieldName": "MemberID",
+                        "FieldVal": $.getTicketMIID(),
+                        "Relation": "And",
+                        "SearchMode": "Equal"
+                    }
+               ]
+            }, 'get_UserPromotion');
+        }
+
+        var get_UserPromotion = function (json) {
+            if (json.IsSuccess == true) {
+                var str = "";
+                var i = 0;
+                var len = 0;
+                if (json.Data) {
+                    len = json.Data.length;
+                }
+                $.packing(json.Data).each(function () {
+                    i++;
+                    str = "<div class=\"item nocoupon couponlist\" onclick=\"LineFunction('chk" + i + "'," + this.ID + ",'" + this.CouponCode + "'," + len + ");\">";
+                    str += "<div class=\"voucher\">";
+                    str += "<span class='word'>￥</span><span class='num'>" + this.AmtOrOff + "</span>";
+                    str += "</div>";
+                    str += "<div class=\"info\">";
+                    str += "<p class=\"title\">" + this.PromotionName + "</p>";
+                    str += "<p class=\"time\">" + this.StartDate + " 至 " + this.EndDate + "</p>";
+                    str += "</div>";
+                    str += "<div class=\"couponBtn\">";
+                    str += "<input style=\"display:none;\" onclick=\"DoUse('" + this.ID + "','" + this.AmtOrOff + "')\" value=\"使 用\" id=\"chk" + i + "\" type=\"button\" name=\"cou\">";
+                    //str += "<input idname=\"" + this.AmtOrOff + "\" procode=\"" + this.CouponCode + "\" value=\"" + this.ID + "\" id=\"chk" + this.ID + "\" type=\"radio\" name=\"cou\">";
+                    str += "</div>";
+                    str += "</div>";
+
+                    $("#couponlist").append(str);
+                });
+
+            }
+            else {
+                $.easyErrorBox(json.Message);
+            }
+        }
+        function LineFunction(id, couponid, couponcode, len) {
+            for (var i = 1; i <= len; i++) {
+                var cid = "chk" + i;
+                if (cid == id) {
+                    $("#" + id).attr("style", "display:block;");
+                }
+                else {
+                    $("#chk" + i).attr("style", "display:none;");
+                }
+            }
+
+        }
+        function DoUse(couponid,couponAmt) {
+            $.setSessionCache("couponCode", couponid);
+            $.setSessionCache("couponAmt", couponAmt);
+            location.href = "ordersettlement.htm?OrderID=" + OrderID;
+        }
+        $(function () {
+            GetPromotion();
+            //$("#ifcoupon").parent().addClass("active");
+            //$("#ifcoupon").attr("checked", true);
+            //$("#couponlist .checkRadio").removeClass("active").children("input").attr("checked", false);
+        });
+        var isusedTiket = false;
+
+        //返回，即代表不使用优惠券
+        function Doback() {
+
+//            
+//            if ($.getSessionCache("couponCode") != null && $.getSessionCache("couponCode") != "")
+//            { }
+//            else {
+                isusedTiket = false;
+                $.setSessionCache("couponCode", "");
+                $.setSessionCache("couponAmt", "");
+            //}
+
+            location.href = "ordersettlement.htm?OrderID=" + OrderID;
+        }
+        //使用输入的优惠券号码
+        function doUsedCode() {
+            var code = $("#couponcode").val();
+            UseCouponCode(code);
+        }
+        function UseCouponCode(code) {
+            var MIID = $.getTicketMIID();
+            if (!MIID) {
+                MIID = 0;
+            }
+            //var code = $("#couponcode").val();
+            if (code != "") {
+                //移除选择项的样式
+                $.each($(".checkRadio"), function () {
+                    $(this).removeClass("active");
+                }); 
+                $.getJsonAsync({
+                    "ObjectName": "GetCouponByCode",
+                    "SearchData": [
+                    {
+                        "FieldName": "CouponCode",
+                        "FieldVal": code,
+                        "Relation": "And",
+                        "SearchMode": "Equal"
+                    }, {
+                        "FieldName": "MIID",
+                        "FieldVal": MIID,
+                        "Relation": "And",
+                        "SearchMode": "Equal"
+                    }
+               ]
+                }, 'get_UseCoupon');
+            }
+            else {
+                $.easyErrorBox("请输入优惠券码");
+            }
+        }
+        var get_UseCoupon = function (json) {
+            if (json.IsSuccess == true) {
+                var data = json.Data;
+                if (data) {
+                    $.setSessionCache("couponCode", data.PromotionCode);
+                    $.setSessionCache("couponAmt", data.AmtOrOff);
+                    GetPromotion();
+                    location.href = "ordersettlement.htm?OrderID=" + OrderID;
+                }
+            } else {
+                $.easyErrorBox(json.Message);
+            }
+            
+        }
+    </script>
+</body>
+</html>

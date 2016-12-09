@@ -1,0 +1,288 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>登录-支付会员押金</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script>
+    <script type="text/javascript" src="../javascript/common.js"></script>
+     <script type="text/javascript" src="../javascript/paymemdeposit.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+        <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".checkRadio").click(function () {
+                if ($(this).children("input").attr("name")) {
+                    var name = $(this).children("input").attr("name");
+                    $(document).find("input[name='" + name + "']").parent(".checkRadio").removeClass("active");
+                    $(document).find("input[name='" + name + "']").attr("checked", false);
+                    $(this).addClass("active");
+                    $(this).attr("checked", true);
+                }
+                else {
+                    if ($(this).hasClass("active")) {
+                        $('.checkRadio').addClass('active');
+                        $(this).removeClass("active");
+                        $(this).children("input").attr("checked", false);
+                    }
+                    else {
+                        $('.checkRadio').removeClass('active');
+                        $(this).addClass("active");
+                        $(this).children("input").attr("checked", true);
+                        //SaveReceivables();
+                    }
+                }
+
+            });
+
+        })
+    </script>
+</head>
+<body>
+    <header class="register">
+        <a class="backTo" ><img src="../images/header_back.png"></a>
+        <span class="logo">
+            支付会员押金
+        </span>
+    </header>
+    <div class="payMemDeposit">
+        <div class="txtInfo">
+            <span>会员押金</span>
+        </div> 
+        <div class="deposit" style="border-bottom:none;">
+            <img src="../images/money_icon.png" alt="" class="icon">
+            <span>当前余额</span>
+            <span class="fr">￥<span class="depositNo" id="deposit">0</span></span>
+        </div> 
+        <div class="deposit">
+            <img src="../images/money_icon.png" alt="" class="icon">
+            <span>充值金额</span>
+            <span class="fr">￥<input type="text" id="doValue" style="border:solid 1px #efefef; height:2.5em; padding-left:0.2em;" placeholder="请输入充值金额" /></span>
+        </div>
+        <span style=" color:Red; padding:1em 0.8em; display:block; font-size:0.8em;">注：会员押金最低金额为：¥500，租金不可超过押金的60%。</span>
+        <div class="txtInfo">
+            <span>选择支付方式</span>
+        </div>
+        <div class="paymentMode" id="checkRadioBtn">
+            <div class="paymentModeList">
+                <img src="../images/alipay_icon.png" alt="" class="icon">
+                <div class="txt">
+                    <p class="bold">支付宝支付</p>
+                    <p>推荐支付宝用户使用</p>
+                </div>
+                <div class="checkRadio active checkRadio1">
+                    <input type="radio">
+                </div>
+            </div>
+            <div class="paymentModeList noBor">
+                <img src="../images/idcard_icon.png" alt="" class="icon">
+                <div class="txt">
+                    <p class="bold">银行卡支付</p>
+                    <p>支持信用卡储蓄卡、无需开通网银</p>
+                </div>
+                <div class="checkRadio checkRadio2">
+                    <input type="radio">
+                </div>
+            </div>
+            <div class="paymentModeList noBor">
+            <a onclick="wxPay();">微信支付</a>
+            </div>
+        </div>
+        <button class="makeSurePay" onclick="DoSubmit()">确认支付</button>
+    </div>
+    <script>
+        function wxPay() {
+            var request = new Object();
+            request.appId = "wxa946dca00d7cead7";
+            request.partnerId = "1254774501";
+            request.prepayId = "1101000000140415649af9fc314aa427";
+            request.packageValue = "Sign=WXPay";
+            request.nonceStr = "1101000000140429eb40476f8896f4c9";
+            request.timeStamp = "1398746574";
+            request.sign = "7FFECB600D7157C5AA49810D2D8F28BC2811827B";
+            cordova.exec('wxOk', 'wxFaild', 'WeChatPlugin', 'doPay', request);
+        }
+        function wxOk() {
+            alert("wxOk");
+        }
+        function wxFaild() {
+            alert("wxFaild");
+        }
+    //支付宝交易的回调函数
+        function receivePayInfo(obj) {
+            /*
+            obj = "|9000|partner='2088911299180213'&seller_id='extkcar@vip.sina.com'&out_trade_no='20150515EI15050025'&subject='租车租金'&body='test'&total_fee='0.01'&notify_url='http://notify.msp.hk/notify.htm'&service='mobile.securitypay.pay'&payment_type='1'&_input_charset='utf-8'&it_b_pay='30m'&return_url='m.alipay.com'&success='true'&sign_type='RSA'&sign='pp++73jch/1YstmCApfm/wSSF/mAqM40bRBqUEeZeCNwNXZlv/pSPGx68QKeh9mwrVVTbGolze7/LGeZJIxD9RXPN2DPv5vCE7HR+A1+PDYcX9GFiINvURmBZHjQk1BVUI6UvzHXjKWdIoQd7O/cKL15mcZT5k49H/zBB/3pxNA=";*/
+            if (obj != null && obj != "" && obj != "undefined") {
+                obj = decodeURI(obj);
+                var arry = new Array();
+                arry = obj.split('|');
+                if (arry.length > 0) {
+                    var Status = arry[1];
+                    var str = arry[2];
+
+                    var reg = new RegExp('"', "g");
+                    str = str.replace(reg, "");
+                    var jsonArry = str.split("&");
+                    var resultSuccess = "";
+                    var sign = "";
+                    var PaymentTN_return = "";
+                    var total_fee = "";
+                    var TradeNo = "";
+                    if (Status == 9000) {
+                        for (var strData in jsonArry) {
+                            if (jsonArry[strData].indexOf("success") >= 0) {
+                                resultSuccess = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("sign") >= 0) {
+                                sign = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("out_trade_no") >= 0) {
+                                PaymentTN_return = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("total_fee") >= 0) {
+                                total_fee = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("trade_no") >= 0 && jsonArry[strData].indexOf("out_") < 0) {
+                                TradeNo = jsonArry[strData].split("=")[1].toString();
+                            }
+                        }
+                    }
+                    if (Status == "9000" && resultSuccess == "true") {
+                        //付款成功后   更新用户的余额
+                        var doPrice = $("#doValue").val();
+                        if ($('.checkRadio1').hasClass('active')) {
+                            payway = "0";
+                        }
+                        if ($('.checkRadio2').hasClass('active')) {
+                            payway = "1";
+                        }
+                        $.getJson({
+                            "ObjectName": "MEMBERBALANCE",
+                            "SearchData": [
+                                  {
+                                      "FieldName": "PayWay",
+                                      "FieldVal": payway,
+                                      "Relation": "And",
+                                      "SearchMode": "In"
+                                  },
+                                  {
+                                      "FieldName": "MIID",
+                                      "FieldVal": Member_id,
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  },
+                                  {
+                                      "FieldName": "Balance",
+                                      "FieldVal": doPrice,
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  },
+                                  {
+                                      "FieldName": "PaymentTN",
+                                      "FieldVal": PaymentTN_return,
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  },
+                                  {
+                                      "FieldName": "TradeNo",
+                                      "FieldVal": TradeNo,
+                                      "Relation": "And",
+                                      "SearchMode": "Equal"
+                                  }
+                               ]
+                        }, 'get_MEMBERBALANCE');
+                    }
+                    else {
+                        //付款失败后  更改付款记录的状态
+                        $.getJson({
+                            "ObjectName": "UpdateReceivablesStatus",
+                            "subData":
+                              {
+                                  "PaymentTN": PaymentTN_return,
+                                  "StatusCode": "12900030",
+                                  "TradeNo": TradeNo
+                              }
+                        }, 'get_UpStatus');
+                        //$.easyErrorBox(arry[0]);
+                    }
+                }
+            }
+
+        }
+        var get_UpStatus = function (json) {
+            $.easyErrorBox("支付失败!");
+        }
+
+
+
+        var payca = $.getUrlVar("payStatus");
+        var isub = $.getUrlVar("payType");
+        var r_PayAmt = "";
+        if (payca != null && isub != null & isub == "UnionPay") {
+            var r_paymentnt = $.getUrlVar("PaymentTN");
+            var r_paymentTN_UB = $.getUrlVar("PaymentTN_UB");
+            r_PayAmt = $.getUrlVar("orderamt");
+            var b = $.getUrlVar("balance");
+
+            var p = r_PayAmt;
+            if (p == null || p == "") {
+                p = 0;
+            }
+            var p2 = b;
+            if (p2 == null || p2 == "") {
+                p2 = 0;
+            }
+
+            r_PayAmt = (parseFloat(p) + parseFloat(p2)).toFixed(2);;
+
+            var r_memberid = $.getUrlVar("memberid");
+            //alert(r_paymentnt + "|" + r_paymentTN_UB + "|" + r_PayAmt);
+            if (payca == "success") {
+                //付款成功后   更新用户的余额
+                //var doPrice = $("#doValue").val();
+                //window.location.href = './depositpaysuccess.htm?Price=' + doPrice;
+                window.location.href = './depositpaysuccess.htm?Price=' + r_PayAmt;
+            }
+            else {
+                //付款失败后  更改付款记录的状态
+                $.getJson({
+                    "ObjectName": "UpdateReceivablesStatus",
+                    "subData":
+                              {
+                                  "PaymentTN": r_paymentnt,
+                                  "StatusCode": "12900030",
+                                  "TradeNo": r_paymentTN_UB
+                              }
+                }, 'get_UpStatus');
+            }
+        }
+        else if (isub == "Alipay") {
+            var r_paymentnt = $.getUrlVar("PaymentTN");
+            $.getJson({
+                "ObjectName": "UpdateReceivablesStatus",
+                "subData":
+                              {
+                                  "PaymentTN": r_paymentnt,
+                                  "StatusCode": "12900030",
+                                  "TradeNo": ''
+                              }
+            }, 'get_UpStatus');
+        }
+        var get_MEMBERBALANCE_UB = function (json) {
+            if (json.IsSuccess == true) {
+                window.location.href = './depositpaysuccess.htm?Price=' + r_PayAmt;
+            }
+            else {
+                $.easyErrorBox(json.Message);
+            }
+        }
+    </script>
+</body>
+</html>

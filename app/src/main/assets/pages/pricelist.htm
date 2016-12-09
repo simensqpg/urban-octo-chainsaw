@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>车辆列表-详情-价格</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script src="../javascript/common.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script> 
+    <script type="text/javascript" src="../javascript/pricelist.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+
+</head>
+<body>
+ <header class="carDetailHead userCenterhead">
+        <a class="back" id="back" onclick="javascript: history.go(-1)">
+            <img src="../images/order_back.png"></a>
+        <div class="title">
+            <span>价格详情</span>
+        </div>
+    </header>
+	<div class="notice_info">
+       <img src="../images/notice_icon.png">
+       e享天开采用租车时间租金 + 实际行驶里程费来计费，另各网点因为停车位价格不同，租金价格略有不同
+    </div>
+    <table class="priceList" cellspacing="0">
+    	<thead>
+    		<tr>
+    			<th></th>
+    			<th><span class="label">工作日</span></th>
+    			<th class="firRowLaCol"><span class="label">双休日</span></th>
+    		</tr>
+    	</thead>
+    	<tbody>
+    		<tr>
+    			<td><span class="label">白天档</span></td>
+    			<td><span class="num" id="workDay"></span><span class="text" id="workDayUnit"></span></td>
+    			<td><span class="num" id="weekDay"></span><span class="text" id="weekDayUnit"></span></td>
+    		</tr>
+    		<tr>
+    			<td><span class="label">夜间档</span></td>
+    			<td><span class="num" id="workNight"></span><span class="text" id="workNightUnit"></span></td>
+    			<td><span class="num" id="weekNight"></span><span class="text" id="weekNightUnit"></span></td>
+    		</tr>
+    		<tr>
+    			<td><span class="label">晚上包段</span></td>
+    			<td><span class="num" id="workAllNight"></span><span class="text" id="workAllNightUnit"></span></td>
+    			<td><span class="num" id="weekAllNight"></span><span class="text" id="weekAllNightUnit"></span></td>
+    		</tr>
+    		<tr>
+    			<td><span class="label">全天</span></td>
+    			<td><span class="num" id="workAllDay"></span><span class="text" id="workAllDayUnit"></span></td>
+    			<td><span class="num" id="weekAllDay"></span><span class="text" id="weekAllDayUnit"></span></td>
+    		</tr>
+            <tr>
+    			<td><span class="label">保险费</span></td>
+    			<td><span class="num" id="workInsurance"></span><span class="text">元/分钟</span></td>
+    			<td><span class="num" id="weekInsurance"></span><span class="text">元/分钟</span></td>
+    		</tr>
+          <!--  <tr>
+    			<td><span class="label">里程费</span></td>
+    			<td><span class="num" id="workFuelMileage"></span><span class="text">元/公里</span></td>
+    			<td class="laRowLaCol"><span class="num" id="weekFuelMileage"></span><span class="text">元/公里</span></td>
+    		</tr>-->
+            <tr>
+    			<td><span class="label">里程费</span></td>
+    			<td>—</td>
+    			<td class="laRowLaCol">—</td>
+    		</tr>
+    	</tbody>
+    </table>
+    <ul class="info_list">
+       <li><img src="../images/day_icon.png" />白天时间：<span id="dayTime"></span></li>
+       <li><img src="../images/night_icon.png" />夜间时间：<span id="nightTime"></span></li>
+       <li><img src="../images/bagsection_icon.png" />晚上包段：<span id="nightAllTime"></span></li>
+    </ul>	
+
+</body>
+</html>

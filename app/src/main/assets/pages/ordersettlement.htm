@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>租车结算</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type='text/javascript' src='../javascript/jquery-1.11.1.min.js'></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script type='text/javascript' src="../javascript/settlement.js"></script>
+    <script type='text/javascript' src="../javascript/common.js"></script>
+    <script type='text/javascript' src="../javascript/getrequest.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+</head>
+<body>
+    <header class="register">
+		<a href="myschedule.htm" class="backTo"><img src="../images/header_back.png"></a>
+		<span class="logo">
+			租车结算
+		</span>
+		<!--<div onclick="javascript:showMap();" class="home"><img src="../images/home.png"></div>-->
+	</header>
+    <div class="subOrderCon selfProvidedVehicles rentalSettlement">
+        <div class="detail">
+            <div class="brand"><img id="js_brandimg" src="../images/selfcarlogo.png"></div>
+            <h2 id="js_carmodel">ROEWE E50</h2>
+            <img src="../images/subor_addr.png" class="icon"><span class="addr" id="js_address">上海虹桥国际机场</span>
+        </div>
+        <h1 class="title">订单执行情况</h1>
+        <div class="travelManage">
+        	<div class="left">
+        		<img src="../images/settlecalendar.png"><p class="date" id="js_startdate">取车　2015-1-20　周三</p>
+                <p class="rightTime"><span class="time" id="js_starttime">12:00</span><span class="text">计划</span></p>
+        		<p class="rightTime actual"><span class="time orange" id="js_starttimefact">12:20</span><span class="text">实际</span></p>
+        	</div>
+        	<div class="center"></div>
+        	<div class="right">
+        		<img src="../images/settlecalendar.png"><p class="date"  id="js_enddate">还车　2015-1-21　周三</p>
+        		<p class="rightTime"><span class="time" id="js_endtime">12:00</span><span class="text">计划</span></p>
+        		<p class="rightTime actual"><span class="time orange" id="js_endtimefact">12:20</span><span class="text">实际</span></p>
+        	</div>
+        </div>
+ 		<div class="bookMatter">
+ 			<div class="getCar item">
+ 				<img src="../images/clock.png" class="icon">
+ 				<h2  id="js_ordertime">订单时长：1天6小时30分钟</h2>
+ 			</div>
+            <div class="getCar item">
+ 				<img src="../images/clock.png" class="icon">
+ 				<h2  id="H1">计费时长：</h2>
+ 					<p><span class="orange" id="js_chaoshi"></span></p>
+ 			</div>
+ 			<div class="judge item">
+ 				<img src="../images/totaldistance.png" class="icon">
+ 				<h2 id="js_km">行驶里程：</h2>
+ 			</div>
+ 		</div>
+ 		<h1 class="title" id="dispFee"><span class="word">需支付金额</span><img src="../images/de_spread_bo.png" class="fr" /><p class="green"><span class="num">￥<span class="sum" id="js_vouchersNeed"></span></span>元</p></h1>
+        <div class="fee borTopBot" id="fee">
+            <div class="fee1 item">
+                <h2>租金</h2>
+                <p><span class="small">￥</span><span class="num" id="js_rent">0</span>元</p>
+            </div>
+            <div class="fee1 item">
+                <h2>超时费</h2>
+                <p><span class="small">￥</span><span class="num" id="js_overtime">0</span>元</p>
+            </div>
+            <div class="fee1 item">
+                <h2>里程费</h2>
+                <p><span class="small">￥</span><span class="num" id="js_fuel">0</span>元</p>
+            </div>
+            <div class="fee1 item">
+                <h2>保险</h2>
+                <p><span class="small">￥</span><span class="num" id="js_ins">0</span>元</p>
+            </div>
+        </div>
+<!--        <div class="fee borTopBot">
+            <div class="fee1 item sumPrice">
+                <h2 class="blue">需支付金额</h2>
+                <p class="green"><span class="num">￥<span class="sum" id="Span1"></span></span>元</p>
+            </div>
+        </div>-->
+        <!--<h1 class="title">其他优惠</h1>-->
+        <div class="fee borTopBot mb" id="promotionList">
+           <div class="fee1 item sumPrice" onclick="GoCouponlis();"><h2 class="blue">使用优惠劵</h2><img src="../images/de_spread.png" class="fr"><span style="float:right; margin-right:0.5em;" id="spSoupon"></span></div>
+        </div>
+        <div class="fee borTopBot fact">
+            <div class="fee1 item sumPrice">
+                <h2 class="blue">实际支付金额</h2>
+                <p class="green"><span class="num"><span class="sum" id="js_vouchers"></span></span>元</p>
+            </div>
+        </div>
+        <p class="tip">如在订单期间有违章，费用将在押金中扣除</p>
+        <button class="toPay" id="btnPay">去支付</button>
+    </div>
+</body>
+</html>

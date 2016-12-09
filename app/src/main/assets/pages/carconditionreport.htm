@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>E享天开-车况报告</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type='text/javascript' src='../javascript/zpomini.js'></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script type='text/javascript' src="../javascript/common.js"></script>
+    <script type='text/javascript' src="../javascript/getrequest.js"></script>
+    <script type="text/javascript" src="../demo/lib/mobileFix.mini.js"></script>
+    <script type="text/javascript" src="../demo/lib/exif.js"></script>
+    <script type="text/javascript" src="../demo/lib/lrz.js"></script>
+    <script type='text/javascript' src="../javascript/carconditionreport.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function () {
+            $.mobile.autoInitialize = false;
+            $.support.cors = true;
+            $.mobile.allowCrossDomainPages = true;
+        });
+
+        var photoType = 0;
+        var pictureSource; // picture source
+        var destinationType; // sets the format of returned value
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            pictureSource = navigator.camera.PictureSourceType;
+            destinationType = navigator.camera.DestinationType;
+
+        }
+
+        function onPhotoDataSuccess(imageData) {
+            var smallImage = document.getElementById('smallImage');
+
+            smallImage.style.display = 'block';
+
+            smallImage.src = imageData;
+        }
+
+        function onPhotoURISuccess(imageURI) {
+
+            var largeImage = document.getElementById('largeImage');
+
+            largeImage.style.display = 'block';
+
+
+            largeImage.src = imageURI;
+        }
+
+        function capturePhoto(a) {
+            photoType = a;
+            navigator.camera.getPicture(uploadPhoto, onFail, {
+                quality: 50,
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                //destinationType : Camera.DestinationType.DATA_URL,
+                sourceType: Camera.PictureSourceType.CAMERA,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.JPEG,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: true
+            });
+        }
+
+        function capturePhotoEdit() {
+            navigator.camera.getPicture(uploadPhoto, onFail, {
+                quality: 50,
+                allowEdit: true,
+                destinationType: destinationType.DATA_URL,
+                saveToPhotoAlbum: true
+            });
+        }
+
+        function getPhoto(source) {
+            photoType = source;
+            navigator.camera.getPicture(uploadPhoto, onFail, {
+                quality: 50,
+                destinationType: destinationType.FILE_URI,
+                sourceType: source
+            });
+        }
+
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
+
+        function uploadPhoto(imageURI) {
+            cordova.exec(function (s) { }, function (e) { }, "UploadPlugin", "uploadpic", [imageURI, "2"]);
+        }
+        //var arry = new Array();
+        var piclist = "";
+     
+        function finishupload(filepath) {
+            var str = "<li>";
+            str += "<img src=\"http://image.extk.com.cn/CarReport/" + filepath + "\"><span class=\"delete\" ></span></li>";
+            $("#imgList").append(str);
+            piclist += filepath + ";";
+            
+            //arry.push(filepath);
+        }
+
+        function win(r) {
+            alert("上传成功");
+
+        }
+
+        function fail(error) {
+            alert("An error has occurred: Code = " + error.code);
+            alert("upload error source " + error.source);
+            alert("upload error target " + error.target);
+        }
+    </script>
+</head>
+<body>
+    <header class="register">
+        <a href="javascript:;" class="backTo" id="backTo"><img src="../images/header_back.png"></a>
+        <span class="logo">
+            车况清洁报告
+        </span>
+        <div onclick="javascript:showMap();" class="home"><img src="../images/home.png"></div>
+    </header>
+    <div class="subOrderCon comment">
+        <div class="textarea marTop">
+        	<textarea id="content" placeholder="亲，如果您的车辆有任何清洁卫生问题请在此处说明。"></textarea>
+        	<p>还可以输入<span id="wordNum"></span>个字</p>
+        </div>
+        <div class="addImg" id="addImg">
+        	<ul id="imgList">
+        	</ul>
+        	<span class="add" id="add" onclick="javascript:capturePhoto(1);"><img src="../images/addimg.png"></span>
+        </div>
+        <button class="loginBtn change" id="upload" onclick="DoCondition();">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
+        <script>
+            function DoCondition() {
+                var content = $("#content").val();
+                if (content == "") {
+                    $.easyErrorBox("请输入内容!");
+                    return false;
+                }
+                var pic = "";
+                if (piclist.length > 0) {
+                    pic = piclist;
+                }
+                var uname = $.getTicketUserName();
+                $.getJson({
+                    "ObjectName": "ConditionAdd",
+                    "SubData":
+                    {
+                        "ConditionType": condiId,
+                        "ConditionContent": content,
+                        "Pics": pic,
+                        "CarID": carId,
+                        "OrderID": orderId,
+                        "CreateUser": uname,
+                        "ModifyUser": uname
+                    }
+                },"get_ConditionAdd");
+            }
+
+            var get_ConditionAdd = function (json) {
+                if (json.IsSuccess == true) {
+                    $.easyErrorBox("车况信息已经提交!");
+                    window.location.href = './conditionreport.htm?PlateNo=' + PlateNo + '&carId=' + carId + '&orderId=' + orderId;
+
+                }
+                else {
+                    $.easyErrorBox(json.Message);
+                }
+            };
+        </script>
+    </div>
+</body>
+</html>

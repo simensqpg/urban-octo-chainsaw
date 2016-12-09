@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>登录-支付会员押金</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script>
+    <script type="text/javascript" src="../javascript/common.js"></script>
+    <script type="text/javascript" src="../javascript/payorder.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+    <script type="text/javascript">
+        var total_fee = "";
+        function receivePayInfo(obj) {
+        /*
+            obj = "|9000|partner='2088911299180213'&seller_id='extkcar@vip.sina.com'&out_trade_no='20150515EI15050025'&subject='租车租金'&body='test'&total_fee='0.01'&notify_url='http://notify.msp.hk/notify.htm'&service='mobile.securitypay.pay'&payment_type='1'&_input_charset='utf-8'&it_b_pay='30m'&return_url='m.alipay.com'&success='true'&sign_type='RSA'&sign='pp++73jch/1YstmCApfm/wSSF/mAqM40bRBqUEeZeCNwNXZlv/pSPGx68QKeh9mwrVVTbGolze7/LGeZJIxD9RXPN2DPv5vCE7HR+A1+PDYcX9GFiINvURmBZHjQk1BVUI6UvzHXjKWdIoQd7O/cKL15mcZT5k49H/zBB/3pxNA=";*/
+            if (obj != null && obj != "" && obj != "undefined") {
+                obj = decodeURI(obj);
+                var arry = new Array();
+                arry = obj.split('|');
+                //alert(arry[0] + "|" + arry[1] + "|" + arry[2]);
+                if (arry.length > 0) {
+                    var Status = arry[1];
+                    var str = arry[2];
+
+                    var reg = new RegExp('"', "g");
+                    str = str.replace(reg, "");
+                    var jsonArry = str.split("&");
+                    var resultSuccess = "";
+                    var sign = "";
+                    var PaymentTN_return = "";
+                    var TradeNo = "";
+                    if (Status == 9000) {
+                        for (var strData in jsonArry) {
+                            if (jsonArry[strData].indexOf("success") >= 0) {
+                                resultSuccess = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("sign") >= 0) {
+                                sign = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("out_trade_no") >= 0) {
+                                PaymentTN_return = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("total_fee") >= 0) {
+                                total_fee = jsonArry[strData].split("=")[1].toString();
+                            }
+                            if (jsonArry[strData].indexOf("trade_no") >= 0 && jsonArry[strData].indexOf("out_") < 0) {
+                                TradeNo = jsonArry[strData].split("=")[1].toString();
+                            }
+                        }
+                    }
+                    if (Status == "9000" && resultSuccess == "true") {
+                        var PayType = 0;
+                        if ($('.checkRadio1').hasClass('active')) {
+                            PayType = "0";
+                        }
+                        if ($('.checkRadio2').hasClass('active')) {
+                            PayType = "1";
+                        }
+                        $.getJson({
+                            "ObjectName": "DOPAY",
+                            "subData":
+                              {
+                                  "PaymentTN": PaymentTN_return,
+                                  "PayAmt": total_fee,
+                                  "PayType": PayType,
+                                  "OrderStatus": "12200060",
+                                  "CouponId": couponId,
+                                  "TradeNo": TradeNo
+                              }
+                        }, 'get_PAYORDER');
+                    }
+                      else {
+                      //交易失败 则将订单状态改为12200058
+                          $.getJson({
+                              "ObjectName": "DOPAY",
+                              "subData":
+                              {
+                                  "PaymentTN": PaymentTN_return,
+                                  "PayAmt": total_fee,
+                                  "PayType": PayType,
+                                  "OrderStatus": "12200058",
+                                  "CouponId": couponId,
+                                  "TradeNo": TradeNo
+                              }
+                          }, 'get_PayFail');
+                        //$.easyErrorBox(arry[0]);
+                    }
+                }
+            }
+
+        }
+        var get_PayFail = function (json) {
+            $.easyErrorBox("交易失败!");
+        }
+        var get_PAYORDER = function (json) {
+            if (json.IsSuccess == true) {
+                var sCarID = $.getUrlVar("CarID");
+                var sOrderCode = $.getUrlVar("OrderCode");
+                var url = "./onlinepaysuccess.htm";
+                url += "?orderCode=" + sOrderCode + "&orderId=" + OrderID + "&orderAmt=" + total_fee + "&CarID=" + sCarID;
+                window.location.href = url;
+            } else {
+                $.easyErrorBox(json.Message);
+            }
+        }
+
+        $(function () {
+            $(".checkRadio").click(function () {
+                if ($(this).children("input").attr("name")) {
+                    var name = $(this).children("input").attr("name");
+                    $(document).find("input[name='" + name + "']").parent(".checkRadio").removeClass("active");
+                    $(document).find("input[name='" + name + "']").attr("checked", false);
+                    $(this).addClass("active");
+                    $(this).attr("checked", true);
+                }
+                else {
+                    if ($(this).hasClass("active")) {
+                        $('.checkRadio').addClass('active');
+                        $(this).removeClass("active");
+                        $(this).children("input").attr("checked", false);
+                    }
+                    else {
+                        $('.checkRadio').removeClass('active');
+                        $(this).addClass("active");
+                        $(this).children("input").attr("checked", true);
+                    }
+                }
+
+            });
+
+        })
+
+        var payca = $.getUrlVar("payStatus");
+        var isub = $.getUrlVar("payType");
+        var r_PayAmt = "";
+        if (payca != null && isub != null & isub == "UnionPay") {
+            var r_paymentnt = $.getUrlVar("PaymentTN");
+            var r_paymentTN_UB = $.getUrlVar("PaymentTN_UB");
+            r_PayAmt = $.getUrlVar("orderamt");
+            var r_CouponId = $.getUrlVar("couponid");
+            //alert(r_paymentnt + "|" + r_paymentTN_UB + "|" + r_PayAmt + "|" + r_CouponId);
+            if (payca == "success") {
+
+                $.getJson({
+                    "ObjectName": "DOPAY",
+                    "subData":
+                              {
+                                  "PaymentTN": r_paymentnt,
+                                  "PayAmt": r_PayAmt,
+                                  "PayType": 1,
+                                  "OrderStatus": "12200060",
+                                  "CouponId": r_CouponId,
+                                  "TradeNo": r_paymentTN_UB
+                              }
+                }, 'get_PAYORDER_UB');
+            }
+            else {
+                $.getJson({
+                    "ObjectName": "DOPAY",
+                    "subData":
+                              {
+                                  "PaymentTN": r_paymentnt,
+                                  "PayAmt": r_PayAmt,
+                                  "PayType": 1,
+                                  "OrderStatus": "12200058",
+                                  "CouponId": r_CouponId,
+                                  "TradeNo": r_paymentTN_UB
+                              }
+                }, 'get_PayFail');
+            }
+        }
+        else if (isub == "Alipay") {
+            var r_paymentnt = $.getUrlVar("PaymentTN");
+            r_PayAmt = $.getUrlVar("balance");
+            var r_CouponId = $.getUrlVar("couponId");
+            $.getJson({
+                "ObjectName": "DOPAY",
+                "subData":
+                              {
+                                  "PaymentTN": r_paymentnt,
+                                  "PayAmt": r_PayAmt,
+                                  "PayType": 0,
+                                  "OrderStatus": "12200058",
+                                  "CouponId": r_CouponId,
+                                  "TradeNo": ''
+                              }
+            }, 'get_PayFail');
+        }
+
+        var get_PAYORDER_UB = function (json) {
+            if (json.IsSuccess == true) {
+                var sCarID = $.getUrlVar("CarID");
+                var sOrderCode = $.getUrlVar("OrderCode");
+                var url = "./onlinepaysuccess.htm";
+                url += "?orderCode=" + sOrderCode + "&orderId=" + OrderID + "&orderAmt=" + r_PayAmt + "&CarID=" + sCarID;
+                window.location.href = url;
+            } else {
+                $.easyErrorBox(json.Message);
+            }
+        }
+    </script>
+</head>
+<body>
+    <header class="register">
+        <a id="backA" class="backTo">
+            <img src="../images/header_back.png"></a> <span class="logo">订单支付 </span>
+    </header>
+    <div class="payMemDeposit">
+        <div class="txtInfo">
+            <span>租车租金</span>
+        </div>
+        <div class="deposit">
+            <img src="../images/money_icon.png" alt="" class="icon">
+            <span>支付金额</span> <span class="fr">￥<span class="depositNo" id="deposit">0</span></span>
+        </div>
+        <div class="txtInfo">
+            <span>选择支付方式</span>
+        </div>
+        <div class="paymentMode" id="checkRadioBtn">
+            <div class="paymentModeList">
+                <img src="../images/alipay_icon.png" alt="" class="icon">
+                <div class="txt">
+                    <p class="bold">
+                        支付宝支付</p>
+                    <p>
+                        推荐支付宝用户使用</p>
+                </div>
+                <div class="checkRadio active checkRadio1">
+                    <input type="radio">
+                </div>
+            </div>
+            <div class="paymentModeList noBor">
+                <img src="../images/idcard_icon.png" alt="" class="icon">
+                <div class="txt">
+                    <p class="bold">
+                        银行卡支付</p>
+                    <p>
+                        支持信用卡储蓄卡、无需开通网银</p>
+                </div>
+                <div class="checkRadio checkRadio2">
+                    <input type="radio">
+                </div>
+            </div>
+        </div>
+        <button class="makeSurePay" onclick="DoSubmit()">
+            确认支付</button>
+    </div>
+</body>
+</html>

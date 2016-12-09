@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="./css/base.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+</head>
+<body>
+<div id="test" style="width:100%;height:20rem;border:2px solid red;">点击我</div>
+<script>
+    window.onload = function(){
+        document.getElementById('test').onclick = function(){
+
+            var json = '{"app_id":"2016101802224157","biz_content":{"subject":"自驾租车服务（订单号：06633420CN3）","seller_id":"","product_code":"QUICK_MSECURITY_PAY","total_amount":"232.60","timeout_express":"5m","body":"自驾租车服务（订单号：06633420CN3）","out_trade_no":"06633420CN3"},"charset":"utf-8","format":"json","method":"alipay.trade.app.pay","notify_url":"http://uat.avis.cn/api/alipaynotifyapp.do","sign_type":"RSA","timestamp":"2016-11-10 11:38:44","version":"1.0","sign":"YnNKbuoVpS99H4XBTRX%2BuD8T7Rrf%2FsusZTo5B8%2Fe12o9O4AoN4faHXyvD8MUQr1ze%2BGbYY6cEHSja76aI6G%2B341vynVtuJzVMDQl2Naitc8%2BiCfGZPd%2FvLQBtxXPkxh8Kq9oH9u8Rpvd8n13XUgidEZJ3sIbA453oKybYEROH74%3D","pay_method":"Alipay"}';
+            javascript:js_bridge.getPayInfo(json);
+        }
+    }
+
+    function payResult(code, message) {
+        alert(code + message);
+    }
+
+</script>
+</body>
+</html>

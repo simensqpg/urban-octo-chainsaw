@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>E享天开-预约用车</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type='text/javascript' src='../javascript/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='../javascript/zpomini.js'></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script src="../javascript/common.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../javascript/leftmenu.js"></script>
+    <script src="../javascript/bookingcar.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+</head>
+<body>
+    <header class="carDetailHead list">
+        <div class="menu" id="menuBtn"><img src="../images/list_menu.png"></div>
+        <div class="title"><span>预约订车</span> </div>
+    </header>
+    <!-- 菜单 -->
+	<div class="menuFilter" id="menuFilter">
+	
+	</div>
+    <div class="subOrderCon">
+ 		<div class="bookMatter borTopBot">
+ 			<div class="getCar item">
+ 				<img src="../images/subor_addr.png" class="icon">
+ 				<h2>取车区域</h2><span class="city">武汉</span>
+ 				<div class="right">
+ 					<span class='text'>当前城市</span>
+ 					<img src="../images/position_blue.png" class="icon cur">
+ 				</div>
+ 			</div>
+ 			<div class="judge item">
+ 				<img src="../images/earth.png" class="icon">
+ 				<h2>取还车网店</h2><span class="city">武汉</span>
+ 				<img src="../images/de_spread.png" class="fr">
+ 			</div>
+ 		</div>
+        <div class="lease borTopBot same">
+            <div class="item" id="js_StartDate">
+                <img src="../images/clock.png" class="icon"><h2>取车时间</h2><span class="date" id="getDate"></span><span class="time" id="getTime"></span><span class="week" id="getWeek"></span>
+                <img src="../images/de_spread.png" class="fr">
+            </div>
+            <div class="item" id="js_EndDate">
+                <img src="../images/clock.png" class="icon"><h2>还车时间</h2><span class="date" id="backDate"></span><span class="time" id="backTime"></span><span class="week" id="backWeek"></span>
+                <img src="../images/de_spread.png" class="fr">
+            </div>
+            <div class="period">
+                <h2>租车时间</h2>
+                <span id="jscounttime"></span>
+            </div>
+        </div>
+        <button class="bookBtn" id="btnGoBook">预约用车</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+﻿
+<script type="text/javascript">
+    $(".menu_list .touchTar").on("touchstart", function () {
+        $(this).css("background", "#d4edfa");
+    }).on("touchend", function () {
+        $(this).css("background", "none");
+    });
+</script>
+<div class="menu_wrap" id="menuLayer">
+    <div class="title" id="js_memberCenter">
+        <span class="user_pic">
+            <img src='../images/user_pic.png ' />
+        </span>
+        <div class="login_register" id="login_sucess">
+        </div>
+        <span class="arrow">
+            <img src="../images/menu_arrow.png" />
+        </span>
+    </div>
+    <ul class="menu_list">
+        <li class="submenu active map touchTar"  onclick="javascript:showMap();">
+            <img src="../images/menu_icon01.png" />
+            <span>地图找车</span> </li>
+        <li class="submenu carDetail touchTar"  onclick="goList();">
+            <img src="../images/menu_icon02.png" />
+            <span>车辆列表</span></li>
+        <!--<li class="submenu bookingCar">
+					<a href="bookingcar.htm">
+					  <span>预约订车</span>
+					</a>
+				</li>-->
+    </ul>
+    <ul class="menu_list">
+        <li class="submenu orderList"><a href="wisdomtravel.htm" class="touchTar">
+            <img src="../images/menu_icon03.png" />
+            <span>自助提还车</span> </a></li>
+        <!--<li class="submenu indivual">
+					<a href="individualcenter.htm">
+					  <span>个人中心</span>
+					</a>				
+				</li>-->
+        <li class="secmenu myJourney"><a href="myschedule.htm" class="touchTar">
+            <img src="../images/menu_icon04.png" />
+            <span>我的行程</span> </a></li>
+        <!--<li class="secmenu inviteFriends">
+					  <a href="javascript:;">
+					   <span>邀请好友</span>
+					  </a>
+				</li>
+			  	
+			  	<!--<li class="secmenu bindingCard">
+					  <a href="javascript:;">
+					   <span>信用卡绑定</span>
+					  </a>
+				</li>
+			  	<li class="secmenu set">
+					  <a href="javascript:;">
+					   <span>设置</span>
+					  </a>
+				</li>-->
+    </ul>
+    <ul class="menu_list">
+        <!--<li class="secmenu about">
+					  <a href="aboutus.htm">
+					  	<span>关于</span>
+					  </a>
+				</li>
+			  	<li class="secmenu about">
+					  <a href="javascript:;">
+                        <img src="../images/menu_icon05.png" />
+					  	<span>消息中心</span>
+					  </a>
+				</li>-->
+        <li class="secmenu sugAndfeedback"><a href="complaintfeedback.htm" class="touchTar">
+            <img src="../images/menu_icon05.png" />
+            <span>建议与反馈</span> </a></li>
+        <li class="secmenu about"><a href="aboutus.htm" class="touchTar">
+            <img src="../images/menu_icon06.png" />
+            <span>关于</span> </a></li>
+    </ul>
+</div>
+<script>
+    function goList() {
+        //重置 当前的网点
+        $.setSessionCache('curSiteOrgID', "0");
+        location.href = "./list.htm";
+    }
+</script>

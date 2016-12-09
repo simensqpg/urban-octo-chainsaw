@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>E享天开</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="./css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="./javascript/global.js"></script>
+    <script type="text/javascript" src="./javascript/Common.js"></script>
+    <script type="text/javascript" src="./javascript/Leftmenu.js"></script>
+    <script type="text/javascript" src="./javascript/default.js"></script>
+    <script type="text/javascript" src="./javascript/getrequest.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=7P2PXQAUXcazFgA3b7iE73BX"></script>
+    <style>
+        section.secbase
+        {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            right: 0px;
+            bottom: 0px;
+            overflow: hidden;
+            background: -webkit-radial-gradient(center, 100% 100%,#0990ce 0%, #015981 100%);
+        }
+        section.secbase img
+        {
+            width: 100%;
+            height: auto;
+        }
+        section.secmap
+        {
+            position: absolute;
+            left: 100%;
+            z-index: 12;
+        }
+        footer
+        {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+        }
+        section.secmap .mapcon
+        {
+            position: absolute;
+            width: 100%;
+            left: 0px;
+            top: 3em;
+            bottom: 3.2em;
+            right: 0px;
+        }
+        .BMap_bottom
+        {
+            opacity: 0;
+        }
+        .BMap_pop .BMap_center
+        {
+            background-color: transparent !important;
+        }
+        .BMap_pop > div
+        {
+            background-color: transparent !important;
+        }
+        .BMap_pop > div > div
+        {
+            background-color: transparent !important;
+        }
+        .BMap_pop
+        {
+            margin-top: 25px;
+        }
+        span.carNo, span.parkNo, span.chaPileNo
+        {
+            color: #999999;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var homeloading = $('#homeloading');
+            $('#homemap').css({
+                'width': homeloading.width(),
+                'height': homeloading.height(),
+                'left': homeloading.width()
+            });
+            /*
+            getGEO();
+            setTimeout(function () {
+            $.setSessionCache('curLat', '121.300951');
+            $.setSessionCache('curLon', '31.198182');
+            //alert("默认位置");
+            location.href = "./pages/map.htm";
+            }, 6000);
+            */
+        });
+        /*
+        function getGEO() {
+        var geo = navigator.geolocation;
+        geo.getCurrentPosition(function (pos) {
+        var coord = pos.coords;
+        $.setSessionCache('curLat', coord.longitude);
+        $.setSessionCache('curLon', coord.latitude);
+        //alert(coord.longitude + "|" + coord.latitude);
+        location.href = "./pages/map.htm";
+        });
+
+        }
+        */
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
+<script type="text/javascript">
+    
+    location.href = "http://uat.avis.cn/app/index.html";
+</script>

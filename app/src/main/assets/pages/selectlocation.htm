@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>选择门店</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type='text/javascript' src='../javascript/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.allArea span').click(function () {
+                if ($(this).next().css('display') == 'none') {
+                    $(this).next().show();
+                }
+                else {
+                    $(this).next().hide();
+                }
+            })
+
+            $('.area li').click(function () {
+                var index = $(this).index();
+                $(this).parent('.area').hide();
+            })
+        })
+    </script>
+</head>
+<body>
+    <header class="carDetailHead">
+        <a href="javascript:;" class="back" onclick="javascript: history.go(-1)"><img src="../images/header_back.png"></a>
+        <div class="title"><span>选择门店</span> </div>
+        <a class="text">确定</a>
+    </header>
+    <div class="selectLocation">
+        <div class="title">
+            <span class="city">上海</span>
+            <div class="allArea">
+                <span>全部区域<img src="../images/all_arrow.png" /></span>
+                <ul class="area" style="display:none;">
+                    <li><a href="javascript:;">普陀区</a></li>
+                    <li><a href="javascript:;">长宁区</a></li>
+                </ul>
+            </div>
+        </div>
+        <ul class="stores">
+            <li><a href="javascript:;"><p class="locations">沪太路店</p><p class="details">沪太路112号，02-162291234</p></a></li>
+            <li><a href="javascript:;"><p class="locations">中山公园店</p><p class="details">沪太路112号，02-162291234</p></a></li>
+            <li><a href="javascript:;"><p class="locations">中山公园店</p><p class="details">沪太路112号，02-162291234</p></a></li>
+        </ul>
+    </div>
+</body>
+</html>

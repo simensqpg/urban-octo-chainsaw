@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>易出行-车辆列表</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+    <script type='text/javascript' src='../javascript/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script src="../javascript/common.js" type="text/javascript"></script>
+    <script type='text/javascript' src='../javascript/list.js'></script>
+    <script type="text/javascript" src="../javascript/leftmenu.js"></script>
+        <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+	<style>
+	.screen ul.deta li .middle{overflow:hidden;}
+	</style>
+</head>
+<body>
+<header class="list">
+	    <div class="menu" id="menuBtn"><img src="../images/list_menu.png"></div>
+	    <!--<div class="search" id="advanceSear"><img src="../images/search_list.png"></div>-->
+        <div class="search" id="GotoList" onclick="javascript:GotoList();"><img src="../images/back.png"></div>
+	    <div class="spread">
+	        <span><a onclick="GoSelectCity();" href="javascript:;"><div id="curCity" style="display:inline;"></div><b id="siteOrg">[所有车辆]</b></a></span><img src="../images/spread.png">
+	    </div>
+	</header>
+	<div class="screen">
+	    <ul class="tab" id="screen">
+	        <li id="nearScreen"><span>附近</span><img src="../images/screen_spread.png"></li>
+	        <li id="priceScreen"><span>价格</span><img src="../images/screen_spread.png"></li>
+	        <li class="no_bg" id="intelScreen"><span>评价</span><img src="../images/screen_spread.png"></li>
+	    </ul>
+	    <!-- <div class="select" style="display:none;" id="select">
+	        <div class="select_list" style="display:none;" id="selectList1">
+	            <ul class="select_name">
+	                <li class="cur"><span></span>全城</li>
+	                <li><span>附近</span></li>
+	            </ul>
+	            <ul class="select_content" id="cityCon">
+	                <li class="active"><span>全城</span></li>
+	            </ul>
+	            <ul class="select_content" id="nearCon" style="display:none">
+	                <li><span>1km</span></li>
+	                <li><span>2km</span></li>
+	                <li><span>3km</span></li>
+	                <li><span>4km</span></li>
+	                <li><span>5km</span></li>
+	            </ul>
+	       </div>
+	       <div class="select_list" style="display:none;" id="selectList2">
+	            <ul class="select_name">
+	                <li class="cur"><span>区间</span></li>
+	            </ul>
+	            <ul class="select_content">
+	                <li class="active"><span value="0">全部价格</span></li>
+	                <li><span value="1">5元及以下</span></li>
+	                <li><span value="2">6元-10元</span></li>
+	                <li><span value="3">11元-15元</span></li>
+	                <li><span value="4">15元以上(不含)</span></li>
+	            </ul>
+	       </div>
+	       <div class="select_list" style="display:none;" id="selectList3">
+	            <ul class="select_name">
+	                <li class="cur"><span>评价</span></li>
+	            </ul>
+	            <ul class="select_content">
+	                <li class="active"><span value="0">全部评价</span></li>
+	                <li><span value="1">4.5分以上</span></li>
+	                <li><span value="2">4.0-4.5分</span></li>
+	                <li><span value="3">4.0分以下</span></li>
+	            </ul>
+	       </div>
+	    </div> -->
+	    <ul class="deta" id="jscars">
+	    	
+
+	    </ul>
+	</div>
+	<!-- <div class="mask_list" id="mask"></div> -->
+	<!-- 菜单 -->
+	<div class="menuFilter" id="menuFilter">
+	
+	</div>
+
+	<!-- 筛选 -->
+	<div class="advancedFilter" style="display:none" id="advanLayer">
+	    <div class="con" id="advanLayerCon">
+	        <div class="title">
+	            <span><img src="../images/search.png"></span>
+	            <h2>高级筛选</h2>
+	            <button>确&nbsp;定</button>
+	        </div>
+            <div class="" id="selectList4">
+                <ul class="select_name">
+	                <li class="cur"><span value="0">排挡</span></li>
+	                <!--<li><span>品牌</span></li>-->
+	                <li><span>价格</span></li>
+	            </ul>
+	            <ul class="select_content">
+                    <li><span value="0">全部</span></li>
+	                <li><span value="11400001">自动挡</span></li>
+	                <li><span value="11400002">手动挡</span></li>
+                    <li><span value="11400003">手自一体</span></li>
+	                <li><span value="11400004">纯电动车</span></li>
+	            </ul>
+               <!-- <ul class="select_content">
+	                <li><span value="1">易出行</span></li>
+	                <li><span value="2">易出行</span></li>
+	            </ul>-->
+                <ul class="select_content">
+	                <li><span value="0">全部价格</span></li>
+	                <li><span value="1">5元及以下</span></li>
+	                <li><span value="2">6元-10元</span></li>
+	                <li><span value="3">11元-15元</span></li>
+	                <li><span value="4">15元以上(不含)</span></li>
+	            </ul>
+            </div>
+	        
+	    </div>
+	</div>
+    <script>
+        function GotoList() {
+            jumplocate();
+            //location.href = "./map.htm";
+        }
+        </script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>注册</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/zpomini.js"></script>
+
+    <script src="../javascript/jquery-2.0.2.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script>
+    <script type="text/javascript" src="../javascript/upload.js"></script>
+    <script type="text/javascript" src="../javascript/register.js"></script>
+    <script src="../javascript/common.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+    <style>
+    .titleBlue{ font-size:1.2em; font-weight:bold; color:Blue;}
+    </style>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function () {
+            $.mobile.autoInitialize = false;
+            $.support.cors = true;
+            $.mobile.allowCrossDomainPages = true;
+        });
+        
+        var photoType = 0;
+        var pictureSource; // picture source
+        var destinationType; // sets the format of returned value
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            pictureSource = navigator.camera.PictureSourceType;
+            destinationType = navigator.camera.DestinationType;
+
+        }
+
+        function onPhotoDataSuccess(imageData) {
+            var smallImage = document.getElementById('smallImage');
+
+            smallImage.style.display = 'block';
+
+            smallImage.src = imageData;
+        }
+
+        function onPhotoURISuccess(imageURI) {
+
+            var largeImage = document.getElementById('largeImage');
+
+            largeImage.style.display = 'block';
+
+
+            largeImage.src = imageURI;
+        }
+
+        function capturePhoto(a) {
+            photoType = a;
+            navigator.camera.getPicture(uploadPhoto, onFail, {
+                quality: 50,
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                //destinationType : Camera.DestinationType.DATA_URL,
+                sourceType: Camera.PictureSourceType.CAMERA,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.JPEG,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: true
+            });
+        }
+
+        function capturePhotoEdit() {
+            navigator.camera.getPicture(uploadPhoto, onFail, {
+                quality: 50,
+                allowEdit: true,
+                destinationType: destinationType.DATA_URL,
+                saveToPhotoAlbum: true
+            });
+        }
+
+        function getPhoto(source, obj) {
+            photoType = obj;
+            navigator.camera.getPicture(uploadLocalPhoto, onFail, {
+                quality: 50,
+                destinationType: destinationType.FILE_URI,
+                sourceType: source
+            });
+        }
+
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
+
+        function uploadPhoto(imageURI) {
+            cordova.exec(function (s) { }, function (e) { }, "UploadPlugin", "uploadpic", [imageURI, "1"]);
+        }
+        function uploadLocalPhoto(imageURI) {
+            cordova.exec(function (s) { }, function (e) { }, "UploadPlugin", "uploadlocalpic", [imageURI, "1"]);
+        }
+
+        function finishupload(filepath) {
+
+            if (photoType == 1) {
+                if (filepath.indexOf('false') >= 0) {
+                    $.easyErrorBox("驾驶证上传失败!");
+                }
+                else {
+                    $("#txtPhoto1").val(filepath);
+                    $("#uploadImgFront").hide();
+                    $("a.imgFront").text("驾驶证已上传成功！");
+                }
+            }
+            if (photoType == 2) {
+                if (filepath.indexOf('false') >= 0) {
+                    $.easyErrorBox("驾驶证副页上传失败!");
+                }
+                else {
+                    $("#txtPhoto2").val(filepath);
+                    $("#uploadImgBack").hide();
+                    $("a.imgBack").text("驾驶证副页已上传成功！");
+                }
+            }
+        }
+
+        function win(r) {
+            alert("上传成功");
+
+        }
+
+        function fail(error) {
+            alert("An error has occurred: Code = " + error.code);
+            alert("upload error source " + error.source);
+            alert("upload error target " + error.target);
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".checkbox").click(function () {
+                if ($(this).children("input").attr("name")) {
+                    var name = $(this).children("input").attr("name");
+                    $(document).find("input[name='" + name + "']").parent(".checkbox").removeClass("active");
+                    $(document).find("input[name='" + name + "']").attr("checked", false);
+                    $(this).addClass("active");
+                    $(this).attr("checked", true);
+                }
+                else {
+                    if ($(this).hasClass("active")) {
+                        $(this).removeClass("active");
+                        $(this).children("input").attr("checked", false);
+                    }
+                    else {
+                        $(this).addClass("active");
+                        $(this).children("input").attr("checked", true);
+                    }
+                }
+            });
+            $('#checkbox').click(function () {
+                if ($(this).children("input").attr("name")) {
+                    var name = $(this).children("input").attr("name");
+                    $(document).find("input[name='" + name + "']").parent(".checkbox").removeClass("active");
+                    $(document).find("input[name='" + name + "']").attr("checked", false);
+                    $(this).addClass("active");
+                    $(this).attr("checked", true);
+                }
+                else {
+                    if ($(this).hasClass("active")) {
+                        $(this).removeClass("active");
+                        $(this).children("input").attr("checked", false);
+                    }
+                    else {
+                        $(this).addClass("active");
+                        $(this).children("input").attr("checked", true);
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <header class="register">
+        <a onclick="javascript: history.go(-1)" class="backTo">
+            <img src="../images/header_back.png"></a> <span class="logo">会员注册 </span><div onclick="javascript:showMap();"
+                class="home">
+                <img src="../images/home.png"></div>
+    </header>
+    <div class="inCenCon registerCon">
+        <div class="login borTopBot shortBorder">
+            <div class="item">
+                <img src="../images/re_phone.png" class="icon">
+                <label>
+                    手&nbsp;&nbsp;机&nbsp;&nbsp;号：</label>
+                <input type="number" id="tel" placeholder="11位手机号" class="shortInput st">
+                <button class="validate" onclick="GetCode();">
+                    验 证</button>
+                <div class="clear">
+                    <img src="../images/clear.png"></div>
+            </div>
+            <div class="item">
+                <img src="../images/re_code.png" class="icon">
+                <label>
+                    验&nbsp;&nbsp;证&nbsp;&nbsp;码：</label>
+                <input type="text" id="code" placeholder="手机6位短信验证码" id="inputCode" class="shortInput">
+                <div class="clear only">
+                    <img src="../images/clear.png"></div>
+            </div>
+            <div class="item">
+                <img src="../images/re_pwd.png" class="icon">
+                <label>
+                    密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+                <input type="password" id="inputPwd" placeholder="6-12位密码" class="shortInput">
+                <a class="view">
+                    <img src="../images/view.png"></a>
+                <div class="clear">
+                    <img src="../images/clear.png"></div>
+            </div>
+            <div class="item noBor">
+                <img src="../images/re_pwd.png" class="icon">
+                <label>
+                    确认密码&nbsp;：</label>
+                <input type="password" id="inputPwd02" placeholder="6-12位密码" class="shortInput">
+                <a class="view">
+                    <img src="../images/view.png"></a>
+                <div class="clear">
+                    <img src="../images/clear.png"></div>
+            </div>
+        </div>
+        <div class="login borTopBot bigImg">
+            <div class="username item">
+                <img src="../images/re_user.png" class="icon">
+                <label>
+                    姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+                <input type="text" id="inputName" placeholder="请填写真实姓名">
+                <div class="clear only">
+                    <img src="../images/clear.png"></div>
+            </div>
+            <div class="sex item">
+                <img src="../images/re_sex.png" class="icon">
+                <label>
+                    性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：</label>
+                <div class="checkbox active" id="chkboxMan">
+                    <input type="checkbox" name="sex">
+                </div>
+                <span class="text">先生</span>
+                <div class="checkbox" id="chkboxWoman">
+                    <input type="checkbox" name="sex">
+                </div>
+                <span class="text">女士</span>
+            </div>
+            <div class="idNo item">
+                <img src="../images/re_idno.png" class="icon">
+                <label>
+                    身份证号：</label>
+                <input type="text" id="identitycard" placeholder="请填写身份证号码">
+                <div class="clear only">
+                    <img src="../images/clear.png"></div>
+            </div>
+        </div>
+        <div class="uploadLicense" id="uploadLicense">
+            <span class="left">上传驾照：</span>
+            <div class="center">
+                <div class="listone">
+                    <a href="javascript:;" class="front upLicense imgFront">请上传驾驶证照片</a><span>正面</span>
+                </div>
+                <div class="listone">
+                    <a href="javascript:;" class="back upLicense imgBack">请上传驾驶证副页照片</a><span>反面</span>
+                </div>
+            </div>
+        </div>
+        <div class="protocol">
+            <div class="checkbox active" id="checkbox">
+                <input type="checkbox">
+            </div>
+            <span class="text">我已阅读并同意</span> <a  href="javascript:;"  class="blue xieyiLayer">e享天开用户协议
+            </a>
+        </div>
+        <button class="loginBtn regi" id="btnRegister" onclick="Enroll();">
+            支付会员押金</button>
+    </div>
+    <!--正面弹出层-->
+    <div class="uploadImgFilter" id="uploadImgFront" style="display: none;">
+        <div class="uploadImg" id="">
+            <div class="txtInfo">
+                <div class="closed" onclick="closelayer();">
+                    X</div>
+                您的身份信息将用于E享天开<br />
+                我们保证不对外泄露
+            </div>
+            <ul class="inconformity">
+                <li>
+                    <img src="../images/rightphotos.jpg" alt=""><p>
+                        本人驾照</p>
+                </li>
+                <li class="nopr">
+                    <img src="../images/vague.jpg" alt=""><p>
+                        照片模糊</p>
+                </li>
+                <li>
+                    <img src="../images/shelterfrom.jpg" alt=""><p>
+                        被 遮 挡</p>
+                </li>
+                <li class="nopr">
+                    <img src="../images/blink.jpg" alt=""><p>
+                        有 反 光</p>
+                </li>
+            </ul>
+            <div class="upLoadBtns">
+                <button onclick="capturePhoto(1)"  class="photoUpload">拍照上传</button>
+                <button onclick="getPhoto(pictureSource.PHOTOLIBRARY,1);"  class="localUpload">本地上传</button>
+                <input type="hidden" id="txtPhoto1" value="" />
+            </div>
+        </div>
+        <div class="showimg">
+            <div class="uploadsure">
+                确定</div>
+            <div id="img_area">
+            </div>
+        </div>
+    </div>
+    <!--反面弹出层-->
+    <div class="uploadImgFilter" id="uploadImgBack" style="display: none">
+        <div class="uploadImg" id="">
+            <div class="txtInfo">
+                <div class="closed" onclick="closelayer();">
+                    X</div>
+                您的身份信息将用于E享天开<br />
+                我们保证不对外泄露
+            </div>
+            <ul class="inconformity">
+                <li>
+                    <img src="../images/rightphotos.jpg" alt=""><p>
+                        本人驾照</p>
+                </li>
+                <li class="nopr">
+                    <img src="../images/vague.jpg" alt=""><p>
+                        照片模糊</p>
+                </li>
+                <li>
+                    <img src="../images/shelterfrom.jpg" alt=""><p>
+                        被 遮 挡</p>
+                </li>
+                <li class="nopr">
+                    <img src="../images/blink.jpg" alt=""><p>
+                        有 反 光</p>
+                </li>
+            </ul>
+            <div class="upLoadBtns">
+                <button onclick="capturePhoto(2)"  class="photoUpload">拍照上传</button> 
+                <button onclick="getPhoto(pictureSource.PHOTOLIBRARY,2);"  class="localUpload">本地上传</button>
+                <input type="hidden" id="txtPhoto2" value="" />
+            </div>
+        </div>
+        <div class="showimg">
+            <div class="uploadsure">
+                确定</div>
+            <div id="img_area01">
+            </div>
+        </div>
+    </div>
+    <div class="uploadImgFilter" id="xieyi" style="display: none">
+        <div class="uploadImg" style=" height:80%;top:10%;">
+            <div class="txtInfo" style=" height:2em; line-height:2em;">
+                <div class="closed" onclick="closelayer();" >
+                    X</div>
+                e享天开会员服务条款
+            </div>
+            <div class="inconformity" style=" line-height:2em;overflow-y:scroll;height:83%; width:90%; padding:10px;">
+        &nbsp;&nbsp;&nbsp;&nbsp;您确认，在您注册成为e享天开会员并接受服务之前，您已充分阅读、理解并接受本条款全部内容，一旦您使用e享天开服务，即表示您同意遵循本条款之所有约定。<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;您同意，本公司有权随时对本条款内容进行单方面的变更，并以在e享天开网站或手机客户端公告的方式予以公布，无需另行单独通知您；若您在本条款内容公告变更后继续使用本服务的，表示您已充分阅读、理解并接受修改后的条款内容，也将遵循修改后的条款内容使用本服务；若您不同意修改后的条款内容，您应停止使用本服务。<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;您声明，您同意接受本条款并注册成为e享会员。您是具有法律规定的完全民事权利能力和民事行为能力，能够独立承担民事责任的自然人。不具备前述条件的，您应立即终止注册或停止使用本服务。<br />
+        <span class="titleBlue">一.   定义</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   “e享天开”是指上海赛可汽车租赁有限公司创建的以节能、环保、便捷为主导的一种新型电动汽车租赁模式。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   “会员”是指按照e享天开的要求完成注册的e享天开用户。用户可以通过移动设备注册和网上注册成为e享天开会员，享受e享天开为会员提供的服务。<br />
+<span class="titleBlue">二.   会员资格</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   凡年龄在18周岁（含）以上、持有国内有效驾驶执照，即均可申请入会。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   如果会员的驾照在任何时间被吊销、没收、失效或其状态发生变化，会员必须立即通知e享天开, 会员将不被批准使用或预订任何e享天开车辆。<br />
+<span class="titleBlue">三.   会员注册</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;用户通过手机客户端进入注册页面，按要求填写注册信息，上传相关证件照片，完成会员注册过程。<br />
+<span class="titleBlue">四.   会员审核</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;用户注册完资料后，我们将在1-3个工作日内进行审核，一旦审核通过，会员可以登录e享天开手机客户端进行车辆预定。<br />
+<span class="titleBlue">五.   服务预订</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;会员登录手机客户端，根据提示选择网点、车辆、以及取车时间进行预订。<br />
+<span class="titleBlue">六.   结算流程</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   会员预订车辆前，需在“押金账户”充值500元作为租车押金，押金方式为储值押金方式。
+&nbsp;&nbsp;&nbsp;&nbsp;2.   会员车辆使用完毕后，请行驶至与取车同一网点，并停放在“e享天开专用车位”上，打开手机客户端进行“锁门还车”操作并支付本次租赁费用。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3.   租金支付可选择支付宝账户支付或银联支付，两种支付方式独立使用。<br />
+<span class="titleBlue">七.   网点取车</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   提前取车：会员可在预订取车时间前取车，租车费用将按您实际的取车时间计算。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   延时取车：在预订取车时间前没有取车，将为您保留15分钟。15分钟后，订单将自动取消。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3.   注意事项<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)  取车前确认车辆外观、内饰是否完好无损，若发现破损或划痕请立即拨打呼叫中心电话说明情况，以免造成您不必要的损失。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)  车辆若正在充电，请根据充电桩使用须知进行操作。特别提醒先确认已断电后再拔下充电桩线。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3)  确认车辆电量满足您本次出行里程要求，若电量不足，请不要启动车辆，立即通过APP结束该订单，并电话告知客服。我们将为您减免该订单费用，并建议您重新预订其它车辆，以免影响您的行程。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4)  确认车辆驾驶无异常，车辆车灯、刹车、车窗等无问题，以保障您的用车安全。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5)  车辆门窗开启键、空调开启键、充电口开启键、灯光开启键请参照《车辆使用说明》<br />
+<span class="titleBlue">八.   费用项目</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   租金费用：车辆分时租赁费用，具体计费方式请参加e享天开官网。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   手续费：会员卡遗失补办手续费20元。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3.   救援费：由于会员操作不当致使车辆损坏或将电量耗尽引发的拖车费用将由会员承担。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4.   修理费：由于会员操作不当致使车辆损坏、发生事故产生的无法由第三方赔付的费用，将由会员承担。<br />
+<span class="titleBlue">九.   使用限制</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   会员不得以任何方式将汽车提供给任何非授权驾驶人驾驶。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   应遵守各项法律法规，不得将租赁车辆转卖、抵押、质押、转借、典当、转租租赁车辆及从事营利性营运，不得利用车辆从事不符合其功能的运输。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3.   会员不得将汽车任何非法或粗鲁方式使用；或用于比赛或速度竞赛；或运送易燃易爆物品、化学品、易腐物品或其它有害原材料或任何种类和性质的污染物质。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4.   任何服用酒精、麻醉品或药物的人员不得驾驶，无论其是否在医生的指导下使用上述物品。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;5.   会员不得将汽车行驶到任何没有铺设路面的土路上行驶或越野行驶，e享天开以书面形式批准的除外。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;6.   汽车不得承载超出核定限乘人数以外的乘客。（限载四人）<br />
+&nbsp;&nbsp;&nbsp;&nbsp;7.   会员不得拆除车内配备的任何物品。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;8.   会员违反使用限制，将承担因此而造成的全部法律责任和经济赔偿责任。e享天开可在不向会员发出通知的情况下，终止其使用汽车的权利和会员资格。e享天开保留法律规定的权利，包括但不限于不经过法律程序向会员发出通知而扣押汽车，会员有义务支付所有e享天开将汽车追回所发生的费用。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;9.   如果会员在使用权利终止后继续使用汽车，e享天开在限定归还期限后有权通知公安机关车辆被盗。<br />
+<span class="titleBlue">十.   车辆使用</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   若发现车辆仪表盘出现任何警告信息或问题、请立即找到安全地点停车并拨打呼叫中心电话，将为您安排紧急救援。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   请遵守交通规则，请勿超速行驶。（建议地面道路时速在40至60公里，城市高架建议60至80公里）<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3.   非特殊情况请勿打开远光灯，以免给您或他人车辆带来安全行驶隐患及事故。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4.   车辆使用过程中，需将车辆停放时，请在熄火关门后，使用App中的“智能控制”进行锁门及开门，如遇信号不稳定区域停放时可使用车内配备的感应卡进行开/关门。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;5.   车辆使用过程中，需对车辆进行充电，请确定充电设施符合车辆充电标准，参照《车辆使用说明》。因未按标准违规充电，会员将支付本次违规造成的经济损失。会员若需至网点进行充电，我们不保证网点充电桩处于闲置状态或可充状态。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;6.   不对任何会员个人财物的损坏或丢失负责。车内承载、放置或遗留的任何个人财物均不对e享天开构成任何委托责任。<br />
+<span class="titleBlue">十一.   还车支付</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   前往与取车同一分时共享网点，将车辆停放到“e享天开专用车位”上。若专用车位已停满或无法停车时，请停在专用车位十米范围以内的其它停车位上，并电话告知客服中心。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   注意不要停在他人专属停车位上，不要停在属违章停车范畴的位置上，若因违规乱停造成的罚款，须自行负责。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3.   关闭好车窗、车灯、电子设备及车门，不要遗忘随身携带的物品。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4.   车辆使用完毕并确认车门关好后，请点击手机客户端“锁门还车”按钮，确定结束用车，并按提示完成支付<br />
+&nbsp;&nbsp;&nbsp;&nbsp;5.   只有通过手机客户端点击“锁门还车”成功后，方才表示用车结束，并停止计费。否则，该车一直为计费状态。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;6.   会员确定结束用车后24小时内未支付本次租金，e享天开有权从会员交纳的押金中直接扣除。且会影响到您的下次用车。<br />
+<span class="titleBlue">十二.   交通违章</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.   e享天开在收到交警或城管违法通知后，会马上进行订单确认。在确认违法会员的情况下，e享天开将立即电话通知该会员。会员应在接到电话后的10天内自行处理违章。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   会员申请押金退还时，e享天开将停止会员所有会员卡的使用功能，在30天后查询无违章后，e享天开将押金退还会员银行账户中。如有违章产生，请会员在收到通知之日起10天内自行负责缴纳罚款、清除违章记录。会员在接到通知之日起10天后依旧未处理违章，视为会员违约，e享天开有权直接扣除押金或预授权作为违约金，不足部分由会员补足。此外，由此给e享天开造成的一切经济损失及法律责任均由会员承担。<br />
+<span class="titleBlue">十三.   交通事故和保险索赔</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;e享天开已为出租车辆投保了交强险、车辆损失险、第三者责任险、盗抢险，投保额参见《保险费明细》<br />
+<table style="width: 100%;  background:#cccccc" cellpadding="1" cellspacing="1">
+        <tr>
+            <td style=" background:#fff; padding-left:5px;">
+                &nbsp;</td>
+            <td style=" background:#fff; padding-left:5px;">
+                投保险种</td>
+            <td style=" background:#fff; padding-left:5px;">
+                赔偿限额</td>
+        </tr>
+        <tr>
+            <td rowspan="3" style=" background:#fff; padding-left:5px;">
+                <span>基本险</span></td>
+            <td style=" background:#fff; padding-left:5px;">
+                <span>交强险</span></td>
+            <td style=" background:#fff; padding-left:5px;">
+                <span>国家标准</span></td>
+        </tr>
+        <tr>
+            
+            <td style=" background:#fff; padding-left:5px;">
+                <span>机动车损失险</span></td>
+            <td style=" background:#fff; padding-left:5px;">
+                <span>国家标准</span></td>
+        </tr>
+        <tr>
+            
+            <td style=" background:#fff; padding-left:5px;">
+                第三者责任险</td>
+            <td style=" background:#fff; padding-left:5px;">
+                1000000元</td>
+        </tr>
+    </table><br />
+&nbsp;&nbsp;&nbsp;&nbsp; 1.   发生包括但不限于交通意外事故及人员伤亡和车损等情况后，根据法定主管部门的事故认定意见，在保险公司索赔范围以外的责任与赔偿由会员自行承担。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   如发生事故的，会员应协助e享天开向保险公司进行理赔，会员应如实提供交通管理部门、保险公司出具的事故证明、责任裁定书、事故调解书、判决书等文件。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3.   因会员使用租赁车辆导致的违章及罚款，由e享定期查询车辆违章信息并电话通知会员，由会员自行处理，如逾期不处理造成的损失则由会员承担。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4.   因会员原因导致车辆维修费用总金额超过15000元的，超出15000元的金额部分，会员须按10%作为车辆加速折旧损失费支付给e享天开。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;5.   会员发生交通违章的，应及时完成违章处理、缴清罚款，若不及时处理，将由e享天开代为处理，每笔订单产生的违章将加收100元代办费，违章产生的扣分，e享天开将按300元1分收取违约金。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;6.   上述第4、5条费用在发生后5个工作日内，会员须立即支付给e享天开。如会员未及时支付，视为会员违约，e享天开有权从押金或预授权中直接扣去，不足部分由会员补足。<br />
+<span class="titleBlue">十四.   免责条款</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;1.       有下列情况之一的，e享天开不承担任何法律责任：<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)  由于您将会员密码告知他人或与他人共享注册帐户，而导致的任何个人资料泄露；<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)  任何由于计算机2000年问题、黑客攻击、计算机病毒侵入或发作、政府管制等造成的暂时性关闭，使网络无法正常运行而造成的个人资料泄露、丢失、被盗用或被窜改；<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3)  由于与本网站链接的其他网站所造成个人资料泄露及由此而导致的任何法律争议和后果；<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4)  因不可抗力而引起的任何后果。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2.   根据《中华人民共和国宪法》和相关法律法规规定，在保护公民合法言论自由的同时，禁止利用互联网、通讯工具、媒体以及其他方式从事以下行为：<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)  组织、煽动抗拒、破坏宪法和法律、法规实施的。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)  捏造或者歪曲事实，散布谣言，妨害社会管理秩序的。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3)  组织、煽动非法集会、游行、示威、扰乱公共场所秩序的。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4)  从事其他侵犯国家、社会、集体利益和公民合法权益的。管理部门将依法严加监管上述行为并予以处理；对构成犯罪的，司法机关将追究刑事责任。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5)  我们将致力于保护您的个人信息，尽全力保证这些信息的安全。由于网上技术的发展突飞猛进，我们会随时更新我们的信息保密制度。所有的修订将在此站点公布。
+
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

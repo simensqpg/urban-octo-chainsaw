@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>我的行程-自助提还车</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../javascript/common.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script>
+    <script type="text/javascript" src="../javascript/wisdomtravel.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript" src="../javascript/leftmenu.js"></script>
+    <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+</head>
+<body>
+    <header class="register list">
+        <a href="javascript:;" class="menu" id="menuBtn">
+            <img src="../images/list_menu.png"></a> <span class="logo">自助提还车 </span>
+            <!--<div onclick="javascript:showMap();" class="home">
+                <img src="../images/home.png"></div>-->
+    </header>
+    <div class="subOrderCon wisdomTravel orderSettle selfProvidedVehicles" id="div_NotEmptyData">
+        <div class="cssPlateNo">
+            <div class="brand">
+                <img src="../images/selfcarlogo.png" id="imgProvider"></div>
+            <h2 id="js_PlateNo">
+            </h2>
+        </div>
+        <h1 class="title">
+            订单执行时，请勿忘取车和还车的按键操作</h1>
+        <div class="travelManage borTopBot">
+            <div class="left">
+                <img src="../images/clock.png"><p class="date" id="getCarDate">
+                    取车 2015-1-20 周三
+                </p>
+                <div class="time orange" id="getCarTime">
+                    12:00
+                </div>
+                <input type="hidden" id="js_GetTime" />
+                <input type="hidden" id="js_OrderID" />
+                <input type="hidden" id="js_OrderStatus" />
+                <button id="btnOpenCarDoor">
+                    开门取车</button>
+                <p class="shift" id="js_YiQuCHe" style="display: none">
+                    12:05 已取车</p>
+            </div>
+            <div class="center">
+            </div>
+            <div class="right">
+                <img src="../images/clock.png"><p class="date" id="backCarDate">
+                    还车 2015-1-21 周三
+                </p>
+                <div class="time" id="backCarTime">
+                    12:00
+                </div>
+                <input type="hidden" id="js_ReturnTime" />
+                <button class="close" id="btnCloseCarDoor">
+                    锁门还车</button>
+                <p class="shift" id="js_YiHuanCHe" style="display: none">
+                    12:30 已还车</p>
+            </div>
+        </div>
+        <div class="control" id="jsCarControl">
+            <img src="../images/control.png" class="icon">
+            <img src="../images/de_spread.png" class="fr">
+            <h2>
+                智慧控制</h2>
+            <p>
+                您行程中的车锁小助手</p>
+        </div>
+        <div class="control carCondition" id="js_conditionreport">
+            <img src="../images/carcondition.png" class="icon">
+            <img src="../images/de_spread.png" class="fr">
+            <h2>
+                车况报告</h2>
+            <p>
+                查验和报告车损、清洁状况</p>
+        </div>
+        <div class="status borTopBot">
+            <div class="item title">
+                <h2>
+                    车辆状态</h2>
+                <span class="tag">实时了解车辆情况</span>
+                <img src="../images/circle.png" onclick="doRefresh();" class="right circle">
+            </div>
+            <div class="item">
+                <img src="../images/totaldistance.png" class="icon">
+                <h2>
+                    已行驶里程</h2>
+                <p class="right" id="mil">
+                    1880km
+                </p>
+            </div>
+            <div class="item noBor">
+                <img src="../images/oil.png" class="icon">
+                <h2>
+                    电量</h2>
+                <p class="right">
+                    剩余<span class="orange" id="power"></span>，可达里程约<span class="orange" id="canMil"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="notravel" id="div_EmptyData" style="display: none">
+        <img src="../images/car_icon.png" class="icon">
+        <p class="bold">
+            您当前无行程</p>
+        <p class="gray">
+            还等什么，马上查看您的专属座驾吧</p>
+        <a href="list.htm" class="nowcarbtn">现在用车</a>
+    </div>
+    <div class="wisdomlayer" id="btnControlCarLayer">
+        <div class="layerBox pickUp">
+            <div class="head">
+                <img src="../images/layeropen.png" class="OpenIcon"><h2>
+                    取车贴士</h2>
+                <span class="close"></span>
+            </div>
+            <ul>
+                <li>确定取车后，订单正式开始执行</li>
+                <li>取车时请注意检查车辆外观，发现问题请拍照</li>
+                <!--<li>工具箱内有加油卡，请您持卡加油</li>-->
+                <li>如果您有任何疑问，欢迎拨打<span class="blue">400-968-1666</span></li>
+            </ul>
+           <!-- <div class="head nobr">
+                <img src="../images/pickupcode.png"><h2>
+                    请输入取车验证码</h2>
+            </div>
+            <ul class="valiCode" id="valiCode">
+                <li>
+                    <input type="text" maxlength="1"></li>
+                <li>
+                    <input type="text" maxlength="1"></li>
+                <li>
+                    <input type="text" maxlength="1"></li>
+                <li>
+                    <input type="text" maxlength="1"></li>
+                <li>
+                    <input type="text" maxlength="1"></li>
+                <li class="last">
+                    <input type="text" maxlength="1"></li>
+            </ul>-->
+            <button id="btnGetCar">
+                确认，开车门</button>
+        </div>
+        <div class="layerBox dropOff">
+            <div class="head">
+                <img src="../images/layerlock.png"><h2>
+                    还车贴士</h2>
+                <span class="close"></span>
+            </div>
+            <ul>
+                <li>确定还车后，您的行程就圆满结束了</li>
+                <li>还车时请注意检查车辆外观，发现问题请拍照</li>
+                <li>为了后续乘客的舒适方便，离开时请保持车内清洁卫生</li>
+                <li>如果您有任何疑问，欢迎拨打<span class="blue">400-968-1666</span></li>
+            </ul>
+            <button class="long" id="btnReturnCar">
+                确认，还车锁门</button>
+        </div>
+    </div>
+    <!-- 菜单 -->
+    <div class="menuFilter" id="menuFilter">
+    </div>
+</body>
+</html>

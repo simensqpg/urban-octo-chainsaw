@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>导航</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.close').click(function () {
+                $(this).parents('.position').hide();
+            })
+        })
+    </script>
+</head>
+<body>
+    <header>
+		<a href="myschedule.htm" class="menu"><img src="../images/backto.png"></a>
+		<span class="logo">
+			<img src="../images/logo.png" alt="">
+		</span>
+		<a onclick="javascript: history.go(-1)" class="back"><img src="../images/back.png"></a>
+	</header>
+    <div class="container nav">
+        <div id="allmap" class="innerMap" style="height: 646px;">
+        </div>
+    </div>
+    <div class="position">
+        <div class="curPos">
+            <img src="../images/position.png" alt="">当前位置
+            <div class="close">
+                <img src="../images/nav_close.png" alt="">
+            </div>
+        </div>
+        <div class="curPosTxt">
+            您的当前位置：<span class="curLoc" id="curLoc"></span>
+        </div>
+        <button class="exitNav" onclick="javascript:location.href='myschedule.htm';">
+            退出导航
+        </button>
+    </div>
+    <script>
+        var lat = 0;
+        var lon = 0;
+        var Point1;
+        var Point;
+
+        var map =
+{
+    loadMap: function () {
+        map.mapObj = new BMap.Map("allmap");
+       
+        map.mapObj.centerAndZoom(Point, 11);
+        //map.bindMarker(Point, true);
+        
+        var data = { AppCode: 1001, AppKey: 9365, ClientID: 12345, TokenID: 'www.softlinker.cn', objectName: 'GETORGANIZATIONLIST', Operate: 'Get' };
+        data.SearchData = [{ FieldName: 'OrgID', FieldVal: $.getUrlVar("SiteOrgID"), Relation: 'And', SearchMode: 'Equal'}];
+        $.getJson(data, "get_GETORGANIZATIONLIST");
+
+
+        //map.bindMarker(Point1, false);
+
+
+        //map.mapObj.addControl(new BMap.ZoomControl());
+    },
+
+    setcenterAndZoom: function (lng, lat) {
+        var Point = new BMap.Point(lng, lat);
+        map.mapObj.centerAndZoom(Point, 15);
+        map.mapObj.addControl(new BMap.ZoomControl());
+    },
+
+    getStore: function () {
+
+        map.requestData = map.request();
+
+        if (!map.requestData || !map.requestData.orgid) {
+            return;
+        }
+
+        $.getJson({
+            "AppCode": "1001",
+            "AppKey": "9365",
+            "ClientID": "12345",
+            "TokenID": "www.softlinker.cn",
+            "objectName": "GETORGANIZATIONLIST",
+            "Operate": "Get",
+            "SearchData": [
+              {
+                  "FieldName": "OrgID",
+                  "FieldVal": map.requestData.orgid,
+                  "Relation": "And",
+                  "SearchMode": "Equal"
+              }
+           ]
+        }, "get_GETORGANIZATIONLIST2");
+    },
+
+    cityBack: function (json) {
+        if (json.IsSuccess != true)
+            return;
+
+        var isCurStore = false;
+        if (!map.requestData || !map.requestData.orgid) {
+            map.setcenterAndZoom(json.Data[0].Longitude, json.Data[0].Latitude, isCurStore);
+        }
+        var i = 0, len = json.Data.length;
+        for (i; i < len; i++) {
+            isCurStore = false;
+            if (json.Data[i].OrgID == map.requestData.orgid) {
+                isCurStore = true;
+                map.setcenterAndZoom(json.Data[i].Longitude, json.Data[i].Latitude);
+            }
+            map.bindMarker(json.Data[i], isCurStore);
+        }
+    },
+
+    bindMarker: function (Point, isCurStore) {
+        var icon;
+        if (isCurStore) {
+            icon = new BMap.Icon('../images/maplight.png', new BMap.Size(55, 80), {
+                anchor: new BMap.Size(10, 30)
+            });
+        }
+        else {
+            icon = new BMap.Icon('../images/map.png', new BMap.Size(33, 39), {
+                anchor: new BMap.Size(10, 30)
+            });
+        }
+        var marker = new BMap.Marker(Point, { icon: icon });
+        if (isCurStore) {
+            map.curMarker = marker;
+        }
+        map.mapObj.addOverlay(marker);
+        marker.addEventListener("click", function () { map.bindStoreInfo(data, marker) });
+    },
+
+    bindStoreInfo: function (data, marker) {
+        var icon;
+        if (map.curMarker) {
+            icon = new BMap.Icon('../Images/map.png', new BMap.Size(33, 39), {
+                anchor: new BMap.Size(10, 30)
+            });
+            map.curMarker.setIcon(icon);
+        }
+        icon = new BMap.Icon('../Images/maplight.png', new BMap.Size(55, 80), {
+            anchor: new BMap.Size(10, 30)
+        });
+        marker.setIcon(icon);
+        map.curMarker = marker;
+
+        map.setcenterAndZoom(data.Longitude, data.Latitude);
+    },
+
+    request: function () {
+        var url = window.location.search, data = {};
+        if (url == '') {
+            return;
+        }
+        url = url.substring(1);
+        url = url.split('&');
+        for (var i = 0; i < url.length; i++) {
+            var arr = url[i].split('=');
+            data[arr[0].toLowerCase()] = arr[1];
+        }
+        return data;
+    }
+}
+
+var get_GETORGANIZATIONLIST = function (json) {
+
+    if (json.IsSuccess == true) {
+        if (json.Data.length > 0) {
+            $.packing(json.Data).each(function () {
+
+                Point1 = new BMap.Point(this.Longitude, this.Latitude);
+                var output = "";
+                var searchComplete = function (results) {
+                    if (driving.getStatus() != BMAP_STATUS_SUCCESS) {
+                        return;
+                    }
+                    var plan = results.getPlan(0);
+                    output += plan.getDuration(true) + "\n";                //获取时间
+                    output += "总路程为：";
+                    output += plan.getDistance(true) + "\n";             //获取距离
+                }
+
+                var walking = new BMap.WalkingRoute(map.mapObj, { renderOptions: { map: map.mapObj, autoViewport: true} });
+                walking.search(Point, Point1);
+
+//                var driving = new BMap.DrivingRoute(map.mapObj, { renderOptions: { map: map.mapObj, autoViewport: true },
+//                    onSearchComplete: searchComplete,
+//                    onPolylinesSet: function () {
+//                        setTimeout(function () {
+//                            //    alert(output)
+//                        }, "1000");
+//                    }
+//                });
+//                driving.search(Point, Point1);
+
+
+
+
+
+//                var myIcon = new BMap.Icon("../images/map_car.png", new BMap.Size(32, 28), {    //小车图片
+//                    //offset: new BMap.Size(0, -5),    //相当于CSS精灵
+//                    imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
+//                });
+//                window.run = function () {
+//                    var driving = new BMap.DrivingRoute(map.mapObj);    //驾车实例
+//                    driving.search(Point, Point1);
+//                    driving.setSearchCompleteCallback(function () {
+//                        var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
+//                        var paths = pts.length;    //获得有几个点
+
+//                        var carMk = new BMap.Marker(pts[0], { icon: myIcon });
+//                        map.mapObj.addOverlay(carMk);
+//                        i = 0;
+//                        function resetMkPoint(i) {
+//                            carMk.setPosition(pts[i]);
+//                            if (i < paths) {
+//                                setTimeout(function () {
+//                                    i++;
+//                                    resetMkPoint(i);
+//                                }, 100);
+//                            }
+//                        }
+//                        setTimeout(function () {
+//                            resetMkPoint(5);
+//                        }, 100)
+
+//                    });
+//                }
+
+//                setTimeout(function () {
+//                    run();
+//                }, 1500);
+
+            });
+        }
+    }
+    else {
+        alert("门店坐标错误");
+        return;
+    }
+}
+
+var get_GETORGANIZATIONLIST2 = function (json) { map.cityBack(json); }
+$(document).ready(function () {
+    //16,32,33
+    // map.loadMap();
+    //map.getStore();
+    //判断是否有了当前坐标点，没有则重新获取
+    if ($.getSessionCache('curLat') != null && $.getSessionCache('curLon') != null) {
+        lat = $.getSessionCache('curLon');
+        lon = $.getSessionCache('curLat');
+        Point = new BMap.Point(lon, lat);
+        map.loadMap();
+    }
+    else {
+        $.setSessionCache('curLat', "121.40736106108403");
+        $.setSessionCache('curLon', "31.2724086148018");
+//        var geolocation = new BMap.Geolocation();
+//        geolocation.getCurrentPosition(function (r) {
+//            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+
+//                lat = r.point.lng;
+//                lon = r.point.lat;
+//                Point = new BMap.Point(lon, lat);
+//                $.setSessionCache('curLat', r.point.lng);
+//                $.setSessionCache('curLon', r.point.lat);
+//                map.loadMap();
+//            }
+//            else {
+//                alert('failed' + this.getStatus());
+//            }
+//        }, { enableHighAccuracy: true }
+//          );
+    }
+
+});
+var myGeo = new BMap.Geocoder();
+var adds = [
+		new BMap.Point(116.307852, 40.057031),
+		new BMap.Point(116.313082, 40.047674),
+		new BMap.Point(116.328749, 40.026922),
+		new BMap.Point(116.347571, 39.988698),
+		new BMap.Point(116.316163, 39.997753),
+		new BMap.Point(116.345867, 39.998333),
+		new BMap.Point(116.403472, 39.999411),
+		new BMap.Point(116.307901, 40.05901)
+	];
+
+function bdGEO() {
+    var pt = new BMap.Point("121.40736106108403", "31.2724086148018");
+    geocodeSearch(pt);
+}
+function geocodeSearch(pt) {
+   
+    myGeo.getLocation(pt, function (rs) {
+        var addComp = rs.addressComponents;
+        $("#curLoc").html("(" + addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber + ")");
+    });
+}
+bdGEO();
+    </script>
+</body>
+</html>

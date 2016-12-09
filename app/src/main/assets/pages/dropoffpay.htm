@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>还车支付</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../javascript/global.js"></script>
+    <script type="text/javascript" src="../javascript/common.js"></script> 
+    <script type="text/javascript" src="../javascript/dropoffpay.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".checkRadio").click(function () {
+                if ($(this).children("input").attr("name")) {
+                    var name = $(this).children("input").attr("name");
+                    $(document).find("input[name='" + name + "']").parent(".checkRadio").removeClass("active");
+                    $(document).find("input[name='" + name + "']").attr("checked", false);
+                    $(this).addClass("active");
+                    $(this).attr("checked", true);
+                }
+                else {
+                    if ($(this).hasClass("active")) {
+                        $('.checkRadio').addClass('active');
+                        $(this).removeClass("active");
+                        $(this).children("input").attr("checked", false);
+                    }
+                    else {
+                        $('.checkRadio').removeClass('active');
+                        $(this).addClass("active");
+                        $(this).children("input").attr("checked", true);
+                    }
+                }
+            });
+
+        })
+    </script>
+</head>
+<body>
+    <header class="register">
+        <a onclick="javascript: history.go(-1)" class="backTo" ><img src="../images/header_back.png"></a>
+        <span class="logo">
+            还车支付
+        </span>
+    </header>
+    <div class="payMemDeposit">
+        <div class="txtInfo">
+            <span>还车支付</span>
+        </div> 
+        <div class="deposit">
+            <img src="../images/money_icon.png" alt="" class="icon">
+            <span>金额</span>
+            <span class="fr">￥<span class="depositNo" id="deposit"></span></span>
+        </div> 
+        <div class="txtInfo">
+            <span>选择支付方式</span>
+        </div>
+        <div class="paymentMode" id="checkRadioBtn">
+            <div class="paymentModeList">
+                <img src="../images/alipay_icon.png" alt="" class="icon">
+                <div class="txt">
+                    <p class="bold">支付宝支付</p>
+                    <p>推荐支付宝用户使用</p>
+                </div>
+                <div class="checkRadio active checkRadio1">
+                    <input type="radio" class="checkRadio">
+                </div>
+            </div>
+            <div class="paymentModeList noBor">
+                <img src="../images/idcard_icon.png" alt="" class="icon">
+                <div class="txt">
+                    <p class="bold">银行卡支付</p>
+                    <p>支持信用卡储蓄卡、无需开通网银</p>
+                </div>
+                <div class="checkRadio checkRadio2">
+                    <input type="radio" class="checkRadio">
+                </div>
+            </div>
+        </div>
+        <button class="makeSurePay" onclick="DoSubmit()">确认支付</button>
+    </div>
+</body>
+</html>

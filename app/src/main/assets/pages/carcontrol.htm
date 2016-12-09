@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>E享天开-车控</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type='text/javascript' src='../javascript/zpomini.js'></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xZyO8nUlRqzLAexAfLkuPqA7"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script type='text/javascript' src="../javascript/carcontrol.js"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type="text/javascript" charset="utf-8" src="..js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/cordova-2.6.0.js"></script>
+</head>
+<body>
+    <header class="register">
+        <a onclick="javascript: history.go(-1)" class="backTo"><img src="../images/header_back.png"></a>
+        <span class="logo">
+            车管锁
+        </span>
+        <div onclick="javascript:showMap();" class="home"><img src="../images/home.png"></div>
+    </header>
+    <div class="carControl">
+    	<span id="btnOpenCarDoor"><img src="../images/opendoor_b.jpg"></span>
+    	<span id="btnCloseCarDoor"><img src="../images/closedoor_b.png"></span>
+    	<!--<span id="btnOpenCarHorn"><img src="../images/horn_b.png" ></span>-->
+    </div>
+</body>
+</html>

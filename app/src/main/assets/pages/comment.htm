@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>E享天开-发表评论</title>
+    <meta name="Keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Administrator" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui" />
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script type="text/javascript" src="../javascript/jquery-1.11.1.min.js"></script>
+    <script type='text/javascript' src='../javascript/global.js'></script>
+    <script type='text/javascript' src="../javascript/common.js"></script>
+    <script src="../javascript/comment.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../javascript/default.js"></script>
+    <script type='text/javascript'>
+     $(window).load(function () {
+    	$('.click').each(function (j) {
+    		$(this).find('ul li').each(function (i) {
+    			$(this).click(function () {
+    				$(this).parents('.click').find('span').attr('class','star'+(parseInt(i)+1));
+    			});
+	    	});
+    	});
+    	$(".checkbox").click(function () {
+    	    if ($(this).children("input").attr("name")) {
+    	        var name = $(this).children("input").attr("name");
+    	        $(document).find("input[name='" + name + "']").parent(".checkbox").removeClass("active");
+    	        $(document).find("input[name='" + name + "']").attr("checked", false);
+    	        $(this).addClass("active");
+    	        $(this).attr("checked", true);
+    	    }
+    	    else {
+    	        if ($(this).hasClass("active")) {
+    	            $(this).removeClass("active");
+    	            $(this).children("input").attr("checked", false);
+    	        }
+    	        else {
+    	            $(this).addClass("active");
+    	            $(this).children("input").attr("checked", true);
+    	        }
+    	    }
+    	});
+
+    });
+    </script>
+</head>
+<body>
+    <header class="register">
+        <a onclick="javascript: history.go(-1)" class="backTo"><img src="../images/header_back.png"></a>
+        <span class="logo">
+            发表评价
+        </span>
+    </header>
+    <div class="publishComment">
+        <div class="widthAll">
+            <div class="leftTxt">
+                <p class="carType" id="js_brandtitle"></p>
+                <p class="orderTime">下单时间：<span id="spanCreateTime"></span></p>
+                <p class="price">
+                    ￥<span id="spanPrice"></span>
+                </p>
+            </div>
+            <div class="rightImg">
+                <img id="js_brandimg" src="">
+            </div>
+        </div>
+        <div class="widthAll">
+            <div class="plList">
+                <h2>总体评价：</h2>
+                <div class="click icon" id="click1">
+                    <span class="star0"></span>
+                    <ul>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="plList">
+                <h2>卫生清洁：</h2>
+                <div class="click icon" id="click2">
+                    <span class="star0"></span>
+                    <ul>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="plList nobr">
+                <h2>驾驶体验：</h2>
+                <div class="click icon" id="click3">
+                    <span class="star0"></span>
+                    <ul>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="textarea">
+        	<textarea id="content" placeholder="亲，您的评价对其他的司机有很大帮助"></textarea>
+        	<p>还可以输入500个字</p>
+        </div>
+        <div class="anonymous">
+            <span class="txt">匿名评价</span>
+            <span class="checkbox">
+                <input type="checkbox">
+            </span>
+        </div>
+        <button class="submitComment" onclick="DoSub();">
+            提交评价
+        </button>
+        
+    </div>
+</body>
+</html>
