@@ -176,7 +176,13 @@ public class MainActivity extends AppCompatActivity {
                     i.setData(Uri.parse(url));
                     startActivity(i);
                 } else {
-                    view.loadUrl(url);
+                    if (url.startsWith("tel:")) {
+                        Uri uri = Uri.parse(url);
+                        Intent intent = new Intent(Intent.ACTION_DIAL, uri);
+                        startActivity(intent);
+                    } else {
+                        view.loadUrl(url);
+                    }
                 }
                 return true;
             }
